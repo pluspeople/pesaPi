@@ -1,0 +1,9 @@
+PHP & mysql
+
+
+PHP as cli module
+
+curl module
+mysql module
+xml module
+xmlreader module
