@@ -59,9 +59,6 @@ class Loader {
   // private functions
   ////////////////////////////////////////////////////////////////
 	private function loadLoginPage() {
-		return @file_get_contents("1.html");
-		exit();
-
 		curl_setopt($this->curl, CURLOPT_URL, $this->baseUrl);
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($this->curl, CURLOPT_COOKIESESSION, true);
@@ -75,13 +72,10 @@ class Loader {
 
 		$output1 = curl_exec($this->curl);
 		// TODO: needs error reporting
-		//		return $output1;
+		return $output1;
 	}
 
 	private function loadSearchPage($loginPage) {
-		return @file_get_contents("2.html");
-		exit();
-
 		$viewState = $this->getViewState($loginPage);
 
 		$postData = 
@@ -102,10 +96,6 @@ class Loader {
 	}
 
 	private function loadResults($searchPage, $fromTime) {
-		$temp = array(@file_get_contents("3.html"));
-		return $temp;
-		exit();
-
 		$fromTime = (int)$fromTime;
 		$pages = array();
 		if ($fromTime > 0) {
