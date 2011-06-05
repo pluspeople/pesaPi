@@ -1,0 +1,17 @@
+php_value include_path "/Users/kaal/work/2011/MpesaPi/simulator/include:./"
+
+php_value session.cache_limiter none
+php_value arg_seperator.output "&amp;"
+php_flag register_globals Off
+php_value magic_quotes_gpc On
+
+RewriteEngine on
+
+RewriteCond %{REQUEST_URI} ^/ke/[Dd]efault.aspx
+RewriteRule ^(.*)$ webroot/index.php [L]
+
+RewriteCond %{REQUEST_URI} ^/ke/Main/home2.aspx
+RewriteRule ^(.*)$ webroot/home2.php [L]
+
+RewriteCond %{REQUEST_URI} !webroot/
+RewriteRule ^(.*)$ webroot/$1 [L]
