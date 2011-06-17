@@ -12,7 +12,7 @@ The system works all the way to the local database - but there are still rough e
 
 System design overview
 ----------------------
-* Does synchroization between Mpesa and a local database.
+* Does synchroization between local and server database.
 * Transaction data are available even when main server is down.
 * Super easy to utilize for integrators (a goal - not there yet).
 * Fast response on historical data.
