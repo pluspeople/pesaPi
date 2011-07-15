@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 	if ($_POST['__VIEWSTATE'] == $_SESSION['VIEWSTATE'] AND
 			$_POST['LoginCtrl$UserName'] == 'test' AND 
 			$_POST['LoginCtrl$Password'] == 'best' AND 
-			$_POST['LoginCtrl$txtOrganisationName'] == 'MpesaPi') {
+			$_POST['LoginCtrl$txtOrganisationName'] == 'PesaPi') {
 
 		if ($_GET['ReturnUrl'] != "") {
 			WebUtility::redirect($_GET['ReturnUrl']);

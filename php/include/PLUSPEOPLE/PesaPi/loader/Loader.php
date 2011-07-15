@@ -26,7 +26,7 @@
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
  */
-namespace PLUSPEOPLE\Mpesapi\loader;
+namespace PLUSPEOPLE\Pesapi\loader;
 
 class Loader {
 	protected $baseUrl = "https://www.m-pesa.com/ke/";
@@ -35,7 +35,7 @@ class Loader {
 	protected $cookieFile = null;
 
 	public function __construct() {
-		$this->config = \PLUSPEOPLE\Mpesapi\Configuration::instantiate();
+		$this->config = \PLUSPEOPLE\Pesapi\Configuration::instantiate();
 		$this->curl = curl_init($this->baseUrl);
 	}
 

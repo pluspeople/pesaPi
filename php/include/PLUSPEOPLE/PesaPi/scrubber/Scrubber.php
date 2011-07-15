@@ -26,7 +26,7 @@
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
  */
-namespace PLUSPEOPLE\Mpesapi\scrubber;
+namespace PLUSPEOPLE\Pesapi\scrubber;
 
 class Scrubber {
 	const VERSION = "1.0";

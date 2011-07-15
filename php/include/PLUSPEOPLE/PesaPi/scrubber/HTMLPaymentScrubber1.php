@@ -1,6 +1,6 @@
 <?php
-namespace PLUSPEOPLE\Mpesapi\scrubber;
-use \PLUSPEOPLE\Mpesapi\Payment;
+namespace PLUSPEOPLE\Pesapi\scrubber;
+use \PLUSPEOPLE\Pesapi\Payment;
 
 class HTMLPaymentScrubber1 {
 	const VERSION = "1.0";

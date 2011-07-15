@@ -26,13 +26,13 @@
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
  */
-namespace PLUSPEOPLE\Mpesapi;
+namespace PLUSPEOPLE\Pesapi;
 
 /*
 	This is the main interface to the Mpesa API.
 	Features are collected here for simple interfacing by the user.
  */
-class Mpesapi {
+class Pesapi {
 	protected $initSyncDate = 0;
 	protected $lastSyncSetting = null;
 
