@@ -1,4 +1,5 @@
 -- phpMyAdmin SQL Dump
+-- hello world
 -- version 3.3.10
 -- http://www.phpmyadmin.net
 --
