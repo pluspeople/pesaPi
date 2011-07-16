@@ -27,7 +27,8 @@
 		SUCH DAMAGE.
  */
 namespace PLUSPEOPLE\Pesapi\simulator;
-date_default_timezone_set('Africa/Nairobi');
+
+require_once("../include/Configuration.php");
 require_once("SlowTemplate.php");
 require_once("WebUtility.php");
 

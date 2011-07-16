@@ -1,5 +1,3 @@
-php_value include_path "/Users/kaal/work/2011/PesaPi/simulator/include:./"
-
 php_value session.cache_limiter none
 php_value arg_seperator.output "&amp;"
 php_flag register_globals Off

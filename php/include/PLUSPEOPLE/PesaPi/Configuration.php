@@ -68,13 +68,13 @@ class Configuration {
 
 		// Database settings follow - please note that they are repeated twice
 		"DatabaseHostRead"						=> "localhost",
-		"DatabaseUserRead"						=> "login",
-		"DatabasePasswordRead"				=> "password",
-		"DatabaseDatabaseRead"				=> "database",
+		"DatabaseUserRead"						=> "root",
+		"DatabasePasswordRead"				=> "ture",
+		"DatabaseDatabaseRead"				=> "2011_pesapi",
 		"DatabaseHostWrite"						=> "localhost",
-		"DatabaseUserWrite"						=> "login",
-		"DatabasePasswordWrite"				=> "password",
-		"DatabaseDatabaseWrite"				=> "database",
+		"DatabaseUserWrite"						=> "root",
+		"DatabasePasswordWrite"				=> "ture",
+		"DatabaseDatabaseWrite"				=> "2011_pesapi",
 
  		"Version"											=> "0.0.2",
 		"ConfigEnd"                   => ""
