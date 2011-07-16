@@ -26,7 +26,7 @@
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
  */
-namespace PLUSPEOPLE\Mpesapi\simulator;
+namespace PLUSPEOPLE\Pesapi\simulator;
 date_default_timezone_set('Africa/Nairobi');
 require_once("SlowTemplate.php");
 require_once("WebUtility.php");
@@ -57,9 +57,9 @@ $tariffs = array('MFI Tariff 4', 'Unkown');
 $pagesizes = array(20, 50, 100, 500);
 
 // Search results
-$results = array();
+$results = array(1);
 foreach ($results AS $result) {
-	$slow->assign(array("RECEIPT" => "",
+	$slow->assign(array("RECEIPT" => "BAY1010XY",
 											"TIME" => date("Y-m-d H:i:s"),
 											"DESCRIPTION" => "Payment received from 0722222222 - TEST TESTSON Acc. 1234",
 											"STATUS" => "Completed",

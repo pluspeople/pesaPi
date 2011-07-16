@@ -34,7 +34,11 @@ class Configuration {
 	protected $configArray=array(
     // Enable this feature when in production - in order to disable debuginformation
 		"ProductionMode"				        => false,
- 		"Version"											=> "1.0.0",
+
+		// Enable this feature when you want to run the API against the simulator
+		// The simulator does not use SSL and is more easy to get up and running.
+		"SimulationMode"                => true,
+
 		// Enabling this will allow the system to automatically 
 		// update the scrubbing methods in use. 
 		// Hereby ensuring the system will keep running with
@@ -56,23 +60,23 @@ class Configuration {
 
 		// Mpesa information
 		"MpesaCertificatePath"        => "change_this_path.pem",
-		"MpesaLoginName"              => "enter_mpesa_login",
-		"MpesaPassword"               => "enter_mpesa_password",
-		"MpesaCorporation"            => "enter_mpesa_corporation",
+		"MpesaLoginName"              => "test",
+		"MpesaPassword"               => "best",
+		"MpesaCorporation"            => "PesaPi",
     "MpesaInitialSyncDate"        => "2011-01-01",    
-		"CookieFolderPath"            => "./",
+		"CookieFolderPath"            => ".",
 
 		// Database settings follow - please note that they are repeated twice
-		"DatabaseType"								=> "mysql",
 		"DatabaseHostRead"						=> "localhost",
-		"DatabaseUserRead"						=> "username",
+		"DatabaseUserRead"						=> "login",
 		"DatabasePasswordRead"				=> "password",
-		"DatabaseDatabaseRead"				=> "db name",
+		"DatabaseDatabaseRead"				=> "database",
 		"DatabaseHostWrite"						=> "localhost",
-		"DatabaseUserWrite"						=> "username",
+		"DatabaseUserWrite"						=> "login",
 		"DatabasePasswordWrite"				=> "password",
-		"DatabaseDatabaseWrite"				=> "db name",
+		"DatabaseDatabaseWrite"				=> "database",
 
+ 		"Version"											=> "0.0.2",
 		"ConfigEnd"                   => ""
 	);
 

@@ -26,7 +26,7 @@
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
  */
-namespace PLUSPEOPLE\Mpesapi\simulator;
+namespace PLUSPEOPLE\Pesapi\simulator;
 
 class WebUtility {
 	public static function checkSubmit($internal_var) {

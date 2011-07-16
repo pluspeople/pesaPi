@@ -29,13 +29,16 @@
 namespace PLUSPEOPLE\Pesapi\loader;
 
 class Loader {
-	protected $baseUrl = "https://www.m-pesa.com/ke/";
+	protected $baseUrl = "https://www.m-pesa.com";
 	protected $config = null;
 	protected $curl = null;
 	protected $cookieFile = null;
 
 	public function __construct() {
 		$this->config = \PLUSPEOPLE\Pesapi\Configuration::instantiate();
+		if ($this->config->getConfig("SimulationMode")) {
+			$this->baseUrl = "http://www.pesapi.ke";
+		}
 		$this->curl = curl_init($this->baseUrl);
 	}
 
@@ -43,7 +46,7 @@ class Loader {
 		$fromTime = (int)$fromTime;
 		$pages = array();
 		if ($fromTime > 0) {
-			$cookiePath = $this->config->getConfig("CookieFolderPath") . '/' . time() . "jarjar.txt";
+			$cookiePath = $this->config->getConfig("CookieFolderPath") . time() . "jarjar.txt";
 			$this->cookieFile = fopen($cookiePath, 'w');
 			$login = $this->loadLoginPage();
 			$search = $this->loadSearchPage($login);
@@ -66,9 +69,11 @@ class Loader {
 		curl_setopt($this->curl, CURLOPT_HEADER, false);
 		curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
 
-		curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt($this->curl, CURLOPT_SSLCERT, $this->config->getConfig("MpesaCertificatePath"));
-		curl_setopt($this->curl, CURLOPT_SSLCERTTYPE, "PEM");
+		if (!$this->config->getConfig("SimulationMode")) {
+			curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0);
+			curl_setopt($this->curl, CURLOPT_SSLCERT, $this->config->getConfig("MpesaCertificatePath"));
+			curl_setopt($this->curl, CURLOPT_SSLCERTTYPE, "PEM");
+		}
 
 		$output1 = curl_exec($this->curl);
 		// TODO: needs error reporting
@@ -85,7 +90,7 @@ class Loader {
 			'&LoginCtrl$txtOrganisationName=' . urlencode($this->config->getConfig("MpesaCorporation")) . 
 			'&LoginCtrl$LoginButton=' . urlencode('Log In'); 
 
-		curl_setopt($this->curl, CURLOPT_URL, $this->baseUrl . "default.aspx?ReturnUrl=%2fke%2fMain%2fhome2.aspx%3fMenuID%3d1826&MenuID=1826");
+		curl_setopt($this->curl, CURLOPT_URL, $this->baseUrl . "/ke/default.aspx?ReturnUrl=%2fke%2fMain%2fhome2.aspx%3fMenuID%3d1826&MenuID=1826");
 		curl_setopt($this->curl, CURLOPT_POST, true);
 		curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postData); 
 		curl_setopt($this->curl, CURLOPT_COOKIEFILE, $this->cookieFile); 
@@ -126,7 +131,7 @@ class Loader {
 				'&ctl00_Main_ctl00_AccountStatementGrid1_dgStatementPostDataValue=' . '' // unkown
 				;
 			
-			curl_setopt($this->curl, CURLOPT_URL, $this->baseUrl . "/Main/home2.aspx?MenuID=1826");
+			curl_setopt($this->curl, CURLOPT_URL, $this->baseUrl . "/ke/Main/home2.aspx?MenuID=1826");
 			curl_setopt($this->curl, CURLOPT_POST, true);
 			curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postData); 
 			curl_setopt($this->curl, CURLOPT_COOKIEFILE, $this->cookieFile); 
