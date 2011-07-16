@@ -185,6 +185,58 @@ class Pesapi {
 		return PaymentFactory::factoryByTimeInterval($from, $until, $type);
 	}
 
+	
+	/* This method determines the different names that have been registered
+		 using a given phone number
+	*/
+	public function locateName($phone) {
+		$names = array();
+
+		if ($phone != "") {
+			$db = Database::instantiate(Database::TYPE_READ);
+			$query = "SELECT DISTINCT name
+							FROM  mpesapi_payment
+              WHERE phonenumber = '" . $db->dbIn($phone) . "'
+              ORDER BY time DESC
+              LIMIT 0,1";
+
+			if ($result = $db->query($query)) {
+				while ($foo = $db->fetchObject($result)) {
+					$names[] = $db->dbOut($foo->name);
+				}
+				$db->freeResult($result);
+			}
+		}			
+		return $names;
+	}
+
+	/* This method determines the different phone numbers that have been 
+		 used by a person with a given name.
+		 This might be extended to include someone with a similar name.
+	*/
+	public function locatePhone($name) {
+		$phones = array();
+
+		if ($name != "") {
+			$db = Database::instantiate(Database::TYPE_READ);
+			$query = "SELECT DISTINCT phonenumber
+							FROM  mpesapi_payment
+              WHERE name = '" . $db->dbIn($name) . "'
+              ORDER BY time DESC
+              LIMIT 0,1";
+
+			if ($result = $db->query($query)) {
+				while ($foo = $db->fetchObject($result)) {
+					$phones[] = $db->dbOut($foo->phonenumber);
+				}
+				$db->freeResult($result);
+			}
+		}			
+		return $phones;
+	}
+
+
+
 	/* This method performs a syncronisation between the safaricom database
 		 and the local database. 
 		 Warning: Although possible, you should never ever have to call this method directly
