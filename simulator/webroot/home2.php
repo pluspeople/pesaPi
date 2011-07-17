@@ -29,8 +29,11 @@
 namespace PLUSPEOPLE\Pesapi\simulator;
 
 require_once("../include/Configuration.php");
+require_once("Database.php");
 require_once("SlowTemplate.php");
 require_once("WebUtility.php");
+require_once("Payment.php");
+require_once("PaymentFactory.php");
 
 $slow = new SlowTemplate('template');
 $slow->setTemplateFile('home2.tpl');
@@ -58,14 +61,14 @@ $tariffs = array('MFI Tariff 4', 'Unkown');
 $pagesizes = array(20, 50, 100, 500);
 
 // Search results
-$results = array(1);
+$results = PaymentFactory::factoryAll();
 foreach ($results AS $result) {
-	$slow->assign(array("RECEIPT" => "BAY1010XY",
-											"TIME" => date("Y-m-d H:i:s"),
-											"DESCRIPTION" => "Payment received from 0722222222 - TEST TESTSON Acc. 1234",
+	$slow->assign(array("RECEIPT" => $result->getReciept(),
+											"TIME" => date("Y-m-d H:i:s", $result->getTime()),
+											"DESCRIPTION" => "Payment received from " . $result->getPhonenumber() . " - " . $result->getName() . " Acc. " . $result->getAccount(),
 											"STATUS" => "Completed",
-											"AMOUNT" => "1500.00",
-											"BALANCE" => "1500.00",
+											"AMOUNT" => number_format($result->getAmount(), 2, '.', ''),
+											"BALANCE" => number_format($result->getPostBalance(), 2, '.', ''),
 											"HASH" => "b142222a-59ab-2ef6-8e52-a027ca4edb21"
 											));
 

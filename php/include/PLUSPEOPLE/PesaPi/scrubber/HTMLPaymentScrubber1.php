@@ -72,7 +72,7 @@ class HTMLPaymentScrubber1 {
 		} elseif (preg_match('/<td.*>\s*Settle Business Charges from\s*/', $rawtext) > 0) {
 			// Business charges settlement
 			$temp['TYPE'] = Payment::TYPE_BUSINESS_CHARGES;
-		} elseif (preg_match('/<td.*>\s*Cancelled:Settle Business Charges from\s*/')) {
+		} elseif (preg_match('/<td.*>\s*Cancelled:Settle Business Charges from\s*/', $rawtext) > 0) {
 			// Business charges settlement cancellation
 			$temp['TYPE'] = Payment::TYPE_BUSINESS_CHARGES_CANCELLATION;
 		} else {
