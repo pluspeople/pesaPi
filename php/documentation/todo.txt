@@ -1,0 +1,13 @@
+- Detection that the site is down.
+
+- disbursements.
+
+- fees-capture
+
+- Automatic detection of first time use of key asking people to change password.
+
+- auto update
+
+- scrubbing of xslt + triangulation.
+
+- feedback system

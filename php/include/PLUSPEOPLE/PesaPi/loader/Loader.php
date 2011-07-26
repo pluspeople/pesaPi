@@ -29,7 +29,7 @@
 namespace PLUSPEOPLE\Pesapi\loader;
 
 class Loader {
-	protected $baseUrl = "https://www.m-pesa.com";
+	protected $baseUrl = "https://ke.m-pesa.com";
 	protected $config = null;
 	protected $curl = null;
 	protected $cookieFile = null;
@@ -39,30 +39,8 @@ class Loader {
 		if ($this->config->getConfig("SimulationMode")) {
 			$this->baseUrl = "http://www.pesapi.ke";
 		}
+
 		$this->curl = curl_init($this->baseUrl);
-	}
-
-	public function retrieveData($fromTime) {
-		$fromTime = (int)$fromTime;
-		$pages = array();
-		if ($fromTime > 0) {
-			$cookiePath = $this->config->getConfig("CookieFolderPath") . time() . "jarjar.txt";
-			$this->cookieFile = fopen($cookiePath, 'w');
-			$login = $this->loadLoginPage();
-			$search = $this->loadSearchPage($login);
-			$pages = $this->loadResults($search, $fromTime);
-			fclose($this->cookieFile);
-			unlink($cookiePath);
-		}
-		// return the reverse array - we want the oldest data first.
-		return array_reverse($pages);
-	}
-
-  ////////////////////////////////////////////////////////////////
-  // private functions
-  ////////////////////////////////////////////////////////////////
-	private function loadLoginPage() {
-		curl_setopt($this->curl, CURLOPT_URL, $this->baseUrl);
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($this->curl, CURLOPT_COOKIESESSION, true);
 		curl_setopt($this->curl, CURLOPT_COOKIEJAR, $this->cookieFile);
@@ -74,17 +52,29 @@ class Loader {
 			curl_setopt($this->curl, CURLOPT_SSLCERT, $this->config->getConfig("MpesaCertificatePath"));
 			curl_setopt($this->curl, CURLOPT_SSLCERTTYPE, "PEM");
 		}
-
-		$output1 = curl_exec($this->curl);
-		// TODO: needs error reporting
-		return $output1;
 	}
 
-	private function loadSearchPage($loginPage) {
-		$viewState = $this->getViewState($loginPage);
+	public function retrieveData($fromTime) {
+		$fromTime = (int)$fromTime;
+		$pages = array();
+		if ($fromTime > 0) {
+			$cookiePath = $this->config->getConfig("CookieFolderPath") . time() . "jarjar.txt";
+			$this->cookieFile = fopen($cookiePath, 'w');
+			$search = $this->loadSearchPage();
+			$pages = $this->loadResults($search, $fromTime);
+			fclose($this->cookieFile);
+			unlink($cookiePath);
+		}
+		// return the reverse array - we want the oldest data first.
+		return array_reverse($pages);
+	}
 
+  ////////////////////////////////////////////////////////////////
+  // private functions
+  ////////////////////////////////////////////////////////////////
+	private function loadSearchPage() {
 		$postData = 
-			'__VIEWSTATE=' . urlencode($viewState) . 
+			'__VIEWSTATE=' . 
 			'&LoginCtrl$UserName=' . urlencode($this->config->getConfig("MpesaLoginName")) . 
 			'&LoginCtrl$Password=' . urlencode($this->config->getConfig("MpesaPassword")) . 
 			'&LoginCtrl$txtOrganisationName=' . urlencode($this->config->getConfig("MpesaCorporation")) . 
@@ -104,27 +94,29 @@ class Loader {
 		$fromTime = (int)$fromTime;
 		$pages = array();
 		if ($fromTime > 0) {
+			$viewState = $this->getViewState($searchPage);
+			$accounts = $this->findAccounts($searchPage);
+			$account = $accounts[2];
 			$now = time();
 
-			$viewState = $this->getViewState($searchPage);
 			$postData = 
 				'__VIEWSTATE=' . urlencode($viewState) .
 				'&ctl00$Main$ctl00$ctlDatePicker$dlpagesize_Input=' . '500' .
 				'&ctl00$Main$ctl00$ctlDatePicker$dlpagesize_text=' . '500' .
 				'&ctl00$Main$ctl00$ctlDatePicker$dlpagesize_value=' . '500' .
 				'&ctl00$Main$ctl00$ctlDatePicker$dlpagesize_index=' . '3' .
-				'&ctl00_Main_ctl00_ctlDatePicker_datePickerStartDate=' . '2011-03-08' .
-				'&ctl00$Main$ctl00$ctlDatePicker$datePickerStartDate$dateInput=' . urlencode('2011-3-8 0:0:0') .
-				'&ctl00$Main$ctl00$ctlDatePicker$datePickerStartDate$dateInput_TextBox=' . '2011-03-08' .
+				'&ctl00_Main_ctl00_ctlDatePicker_datePickerStartDate=' . date("Y-m-d", $fromTime) . 
+				'&ctl00$Main$ctl00$ctlDatePicker$datePickerStartDate$dateInput=' . urlencode(date("Y-m-d H:i:s", $fromTime)) .
+				'&ctl00$Main$ctl00$ctlDatePicker$datePickerStartDate$dateInput_TextBox=' . date("Y-m-d", $fromTime) .
 				'&ctl00_Main_ctl00_ctlDatePicker_datePickerStartDate_calendar_SD=' . urlencode('[]') .
-				'&ctl00_Main_ctl00_ctlDatePicker_datePickerEndDate=' . '2011-03-11' .
-				'&ctl00$Main$ctl00$ctlDatePicker$datePickerEndDate$dateInput=' . urlencode('2011-3-11 0:0:0') .
-				'&ctl00$Main$ctl00$ctlDatePicker$datePickerEndDate$dateInput_TextBox=' . '2011-03-11' .
+				'&ctl00_Main_ctl00_ctlDatePicker_datePickerEndDate=' . date("Y-m-d", $now) . 
+				'&ctl00$Main$ctl00$ctlDatePicker$datePickerEndDate$dateInput=' . urlencode(date("Y-m-d H:i:s", $now)) .
+				'&ctl00$Main$ctl00$ctlDatePicker$datePickerEndDate$dateInput_TextBox=' . date("Y-m-d", $now) .
 				'&ctl00_Main_ctl00_ctlDatePicker_datePickerEndDate_calendar_SD=' . urlencode('[]') .
-				'&ctl00$Main$ctl00$cbAccountType_Input=' . urlencode('Utility Account') .
-				'&ctl00$Main$ctl00$cbAccountType_text=' . urlencode('Utility Account') .
-				'&ctl00$Main$ctl00$cbAccountType_value=' . urlencode('9051523') . // very interesting has to be scrubbed
-				'&ctl00$Main$ctl00$cbAccountType_index=' . '2' . // might be 2
+				'&ctl00$Main$ctl00$cbAccountType_Input=' . urlencode($account[1]) .
+				'&ctl00$Main$ctl00$cbAccountType_text=' . urlencode($account[1]) .
+				'&ctl00$Main$ctl00$cbAccountType_value=' . urlencode($account[2]) . 
+				'&ctl00$Main$ctl00$cbAccountType_index=' . $account[0] . 
 				'&ctl00$Main$ctl00$rblTransType=' . 'All' .
 				'&ctl00$Main$ctl00$btnSearch=' . 'Search' .
 				'&ctl00$Main$ctl00$cpeExpandedFilter_ClientState=' . '' . // unkown 
@@ -150,6 +142,28 @@ class Loader {
 		return isset($temp[1]) ? $temp[1] : "";
 	}
 
+	/*
+		Finds all the accounts available.
+		Returns a 2-dimensional array with the following format:
+		[[offset, name, account-no]]
+	 */
+	private function findAccounts($input) {
+		$results = array();
+		$temp = array();
+		preg_match('/ctl00\$Main\$ctl00\$cbAccountType.+ScrollDownDisabled\.gif"\},\[(.+)]\);<\/script>/U', $input, $temp);
+		
+		if (isset($temp[1])) {
+			preg_match_all('/{"Text":"(.+)","Value":"([0-9]+)","/U', $temp[1], $temp);
+			
+			for ($i = 0; $i < count($temp[1]); $i++) {
+				if (isset($temp[2][$i])) {
+					$results[] = array($i, $temp[1][$i], $temp[2][$i]);
+				}
+			}
+		}
+		return $results;
+	}
+	
 }
 
 ?>

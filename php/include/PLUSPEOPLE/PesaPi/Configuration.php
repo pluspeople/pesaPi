@@ -59,24 +59,24 @@ class Configuration {
 		"MaxCompatibility"            => true,
 
 		// Mpesa information
-		"MpesaCertificatePath"        => "change_this_path.pem",
-		"MpesaLoginName"              => "test",
-		"MpesaPassword"               => "best",
-		"MpesaCorporation"            => "PesaPi",
+		"MpesaCertificatePath"        => "/PATH/TO/CERTIFICATE.pem",
+		"MpesaLoginName"              => "**LOGIN**",
+		"MpesaPassword"               => "**PASSWORD**",
+		"MpesaCorporation"            => "**ORGANISATION**",
     "MpesaInitialSyncDate"        => "2011-01-01",    
 		"CookieFolderPath"            => ".",
 
 		// Database settings follow - please note that they are repeated twice
 		"DatabaseHostRead"						=> "localhost",
-		"DatabaseUserRead"						=> "root",
-		"DatabasePasswordRead"				=> "ture",
-		"DatabaseDatabaseRead"				=> "2011_pesapi",
+		"DatabaseUserRead"						=> "DB-USER",
+		"DatabasePasswordRead"				=> "DB-PASSWORD",
+		"DatabaseDatabaseRead"				=> "DB-DATABASE",
 		"DatabaseHostWrite"						=> "localhost",
-		"DatabaseUserWrite"						=> "root",
-		"DatabasePasswordWrite"				=> "ture",
-		"DatabaseDatabaseWrite"				=> "2011_pesapi",
+		"DatabaseUserWrite"						=> "DB-USER",
+		"DatabasePasswordWrite"				=> "DB-PASSWORD",
+		"DatabaseDatabaseWrite"				=> "DB-DATABASE",
 
- 		"Version"											=> "0.0.2",
+ 		"Version"											=> "0.0.3",
 		"ConfigEnd"                   => ""
 	);
 
