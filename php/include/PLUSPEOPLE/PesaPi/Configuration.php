@@ -26,7 +26,7 @@
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
  */
-namespace PLUSPEOPLE\Pesapi;
+namespace PLUSPEOPLE\PesaPi;
 
 class Configuration {
 	static public $singleton = null;
@@ -58,6 +58,11 @@ class Configuration {
 		// the downside is slower performance. 
 		"MaxCompatibility"            => true,
 
+		// Callback setup
+		"PaymentReceivedPostback"     => false,
+		"PaymentReceivedUrl"          => "http://www.domain.co.ke/payment_received.php",
+		"PaymentReceivedSecret"       => "&secret=somethingspecial",
+
 		// Mpesa information
 		"MpesaCertificatePath"        => "/PATH/TO/CERTIFICATE.pem",
 		"MpesaLoginName"              => "**LOGIN**",
@@ -76,8 +81,7 @@ class Configuration {
 		"DatabasePasswordWrite"				=> "DB-PASSWORD",
 		"DatabaseDatabaseWrite"				=> "DB-DATABASE",
 
- 		"Version"											=> "0.0.3",
-		"ConfigEnd"                   => ""
+ 		"Version"											=> "0.0.4",
 	);
 
 

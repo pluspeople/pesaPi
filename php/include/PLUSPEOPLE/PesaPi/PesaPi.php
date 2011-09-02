@@ -26,19 +26,20 @@
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
  */
-namespace PLUSPEOPLE\Pesapi;
+namespace PLUSPEOPLE\PesaPi;
 
 /*
 	This is the main interface to the Mpesa API.
 	Features are collected here for simple interfacing by the user.
  */
-class Pesapi {
+class PesaPi {
 	protected $initSyncDate = 0;
 	protected $lastSyncSetting = null;
+	protected $config = null;
 
 	public function __construct() {
-		$config = Configuration::instantiate();
-		$this->initSyncDate = strtotime($config->getConfig('MpesaInitialSyncDate'));
+		$this->config = Configuration::instantiate();
+		$this->initSyncDate = strtotime($this->config->getConfig('MpesaInitialSyncDate'));
 		$this->lastSyncSetting = SettingFactory::FactoryByName("LastSync");
 	}
 
@@ -262,7 +263,42 @@ class Pesapi {
 			$rows = $scrubber->scrubRows($page);
 			// save data to database
 			foreach ($rows AS $row) {
-				Payment::import($row);
+				$payment = Payment::import($row);
+
+				if (is_object($payment)) {
+					switch($payment->getType()) {
+					case Payment::TYPE_PAYMENT_RECIEVED:
+						$url = $this->config->getConfig("PaymentReceivedUrl");
+						if ($this->config->getConfig("PaymentReceivedPostback") AND $url != "") {
+
+							$postData = 
+								'amount=' . $payment->getAmount() . 
+								'&account=' . urlencode($payment->getAccount()) . 
+								'&name=' . urlencode($payment->getName()) . 
+								'&mobile=' . urlencode($payment->getPhonenumber()) . 
+								'&time=' . $payment->getTime();
+							$postData .= $this->config->getConfig("PaymentReceivedSecret");
+
+							$curl = curl_init($url);
+
+							curl_setopt($curl, CURLOPT_URL, $url);
+							curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+							curl_setopt($curl, CURLOPT_COOKIESESSION, false);
+							curl_setopt($curl, CURLOPT_HEADER, false);
+							curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+							curl_setopt($curl, CURLOPT_POST, true);
+							curl_setopt($curl, CURLOPT_POSTFIELDS, $postData); 
+
+							$status = curl_exec($curl);
+							// check if creation went ok.
+							if ($status == "OK") { // expect an OK returned from the recepiant
+								// feeback is ok.
+							}
+						}
+						break;
+					}
+				}
+
 			}
 		}
 

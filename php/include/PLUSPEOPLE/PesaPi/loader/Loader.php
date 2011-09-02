@@ -26,7 +26,7 @@
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
  */
-namespace PLUSPEOPLE\Pesapi\loader;
+namespace PLUSPEOPLE\PesaPi\loader;
 
 class Loader {
 	protected $baseUrl = "https://ke.m-pesa.com";
@@ -35,7 +35,7 @@ class Loader {
 	protected $cookieFile = null;
 
 	public function __construct() {
-		$this->config = \PLUSPEOPLE\Pesapi\Configuration::instantiate();
+		$this->config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
 		if ($this->config->getConfig("SimulationMode")) {
 			$this->baseUrl = "http://www.pesapi.ke";
 		}
@@ -61,6 +61,9 @@ class Loader {
 			$cookiePath = $this->config->getConfig("CookieFolderPath") . time() . "jarjar.txt";
 			$this->cookieFile = fopen($cookiePath, 'w');
 			$search = $this->loadSearchPage();
+			if (preg_match("/<h3>Operator Password Change<\/h3>/", $search) > 0) {
+				$search = $this->changePassword($search);
+			}
 			$pages = $this->loadResults($search, $fromTime);
 			fclose($this->cookieFile);
 			unlink($cookiePath);
@@ -76,7 +79,7 @@ class Loader {
 		$postData = 
 			'__VIEWSTATE=' . 
 			'&LoginCtrl$UserName=' . urlencode($this->config->getConfig("MpesaLoginName")) . 
-			'&LoginCtrl$Password=' . urlencode($this->config->getConfig("MpesaPassword")) . 
+			'&LoginCtrl$Password=' . urlencode($this->getPassword()) .
 			'&LoginCtrl$txtOrganisationName=' . urlencode($this->config->getConfig("MpesaCorporation")) . 
 			'&LoginCtrl$LoginButton=' . urlencode('Log In'); 
 
@@ -162,6 +165,54 @@ class Loader {
 			}
 		}
 		return $results;
+	}
+
+	private function changePassword($page) {
+		$viewState = $this->getViewState($page);
+		$oldPassword = $this->getPassword();
+		
+		// generate new pw - NOT very secure!
+		$temp = array();
+		preg_match_all("/(.*)(\d+)$/", $oldPassword, $temp);
+		if (isset($temp[1][0]) AND isset($temp[2][0])) {
+			$newPassword = $temp[1][0] . (string)($temp[2][0] + 1);
+		} else {
+			$newPassword = $oldPassword . "2";
+		}
+		$this->setPassword($newPassword);
+
+		$postData = 
+			'__VIEWSTATE=' . urlencode($viewState) .
+			'&OperatorPasswordChangeControl1$txtPassword=' . urlencode($newPassword) . 
+			'&OperatorPasswordChangeControl1$txtConfirm=' . urlencode($newPassword) . 
+			'&btnUpdatePassword=' . urlencode('Update Password'); 
+		
+		curl_setopt($this->curl, CURLOPT_URL, $this->baseUrl . "/ke/default.aspx?ReturnUrl=%2fke%2fMain%2fhome2.aspx%3fMenuID%3d1826&amp;MenuID=1826");
+		curl_setopt($this->curl, CURLOPT_POST, true);
+		curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postData); 
+		curl_setopt($this->curl, CURLOPT_COOKIEFILE, $this->cookieFile); 
+
+		$result = curl_exec($this->curl); // could potentially detect if the new pw is refused
+		return $result;
+	}
+
+	private function getPassword() {
+		$pwSetting = \PLUSPEOPLE\PesaPi\SettingFactory::factoryByName("MpesaPassword");
+		if (is_object($pwSetting) AND $pwSetting->getValueString() != "") {
+			return $pwSetting->getValueString();
+		} else {
+			return $this->config->getConfig("MpesaPassword");
+		}
+	}
+
+	private function setPassword($input) {
+		$pwSetting = \PLUSPEOPLE\PesaPi\SettingFactory::factoryByName("MpesaPassword");
+		if ($input != "" AND is_object($pwSetting)) {
+			$pwSetting->setValueString($input);
+			$pwSetting->update();
+			return true;
+		}
+		return false;
 	}
 	
 }
