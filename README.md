@@ -1,20 +1,30 @@
 PesaPI
 =======
-PesaPI is an unofficial open source API for (paybill) commercial accounts, released under the BSD(lite) license.  
-Currently the api is implemented in PHP, Mysql, Curl.
+PesaPI is an unofficial open source API for mobile money systems, released under the BSD(lite) license.  
+The system currently support:
+* Mpesa paybill numbers
+* Mpesa private numbers
+
+The API supports both PUSH and PULL versions.
+The PHP version of the API is generally the most mature and recomended at this point - the system is build using Mysql and Curl.
 
 
 Current status
 --------------
-The current system should be considered as a proff-of-concept, or alpha version - it works but should not be used in a production setup as is.    
-The system works all the way to the local database - but there are still rough edges and things pending.  
+The current system should be considered as beta version - at least one commercial solution is using it as its payment gateway.
+However it is not recomended that you deploy the system without having a developer available to support the setup.
+
+Version 0.1.0 was recently released and is contains a major rework of the internal structures of PesaPi - be alert that things that worked previously may not be fully working yet - as detailed testing is ongoing.
+
+Currently we are looking for people to provide copies of the SMS messages they are getting from various payment systems.
 
 
 System design overview
 ----------------------
+* Supports both push and pull notifications.
 * Does synchroization between local and server database.
 * Transaction data are available even when main server is down.
-* Super easy to utilize for integrators (a goal - not there yet).
+* Super easy to utilize for integrators.
 * Fast response on historical data.
 * Keep the load on servers as low as possible.
 * Hopefully more reliable than other APIs.
@@ -31,12 +41,14 @@ The PesaPi class contains several static methods, these methods are the main int
 * locateByAccount(account, from, until) -- returns an array of payments from a particular account-no
 * locateByTimeInterval(from, until) -- returns an array of all payments within a given time interval 
 
+As an alternative you can ask PesaPi to call a your on your site when a new transaction is received (push mechanics).
+
 
 Way forward
 -----------
 The following is a highlevel "todo" list for the project
 
-* Getting the code to release/production quality
-* Getting more developers onboard
-* "simulator", enables you to develope/test without having a commercial account
-* Port to other languages (Java/Python/Ruby/etc)
+* Getting the code to release/production quality.
+* Getting more developers onboard.
+* Add support for more payment systems.
+
