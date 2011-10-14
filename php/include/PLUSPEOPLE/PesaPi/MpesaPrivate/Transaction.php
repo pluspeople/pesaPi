@@ -25,64 +25,27 @@
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
+
+		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi;
+namespace PLUSPEOPLE\PesaPi\MpesaPrivate;
 
-class SettingFactory {
-  ############### Properties ####################
-  const SELECTLIST = "
-SELECT id,
-type,
-name,
-value_string,
-UNIX_TIMESTAMP(value_date) AS value_date,
-value_int ";
+class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
+	// Extended attributes
+	const MPESA_PRIVATE_PAYMENT_RECEIVED = 20;
+	const MPESA_PRIVATE_PAYMENT_SENT = 21;
+	const MPESA_PRIVATE_DEPOSIT = 22;
+	const MPESA_PRIVATE_WITHDRAW = 23;
+	const MPESA_PRIVATE_PAYBILL_PAID = 24;
+	const MPESA_PRIVATE_BUY_GOODS = 25;
+	const MPESA_PRIVATE_AIRTIME_YOU = 26;
+	const MPESA_PRIVATE_AIRTIME_OTHER = 27;
+	const MPESA_PRIVATE_UNKNOWN = 28;
 
-  # # # # # # # # misc methods # # # # # # # #
-  static public function factoryOne($id) {
-    $db = Database::instantiate(Database::TYPE_READ);
-    $id = (int)$id;
+	// 
 
-	  $query = SettingFactory::SELECTLIST . "
-							FROM  mpesapi_setting
-							WHERE	id = '$id' ";
-		
-		if ($result = $db->query($query) AND $foo = $db->fetchObject($result)) {
-		  $returnval = new Setting($foo->id, $foo);
-		  $db->freeResult($result);
-		  return $returnval;
-		}
-  }
 
-  static public function factoryByName($name) {
-    $db = Database::instantiate(Database::TYPE_READ);
-    $name = $name;
 
-	  $query = SettingFactory::SELECTLIST . "
-							FROM  mpesapi_setting
-							WHERE	name = '" . $db->dbIn($name) . "' ";
-
-		if ($result = $db->query($query) AND $foo = $db->fetchObject($result)) {
-		  $returnval = new Setting($foo->id, $foo);
-		  $db->freeResult($result);
-		  return $returnval;
-		}
-  }
-
-  static public function factoryAll() {
-    $db = Database::instantiate(Database::TYPE_READ);
-		$tempArray = array();
-
-	  $query = SettingFactory::SELECTLIST . "
-							FROM  mpesapi_setting ";
-		
-		if ($result = $db->query($query)) {
-			while($foo = $db->fetchObject($result)) {
-				$tempArray[] = new Setting($foo->id, $foo);
-			}
-			$db->freeResult($result);
-		}
-		return $tempArray;
-  }
 }
+
 ?>

@@ -4,6 +4,6 @@ require_once("PLUSPEOPLE/autoload.php");
 
 // Simple syncronisation example
 $pesa = new PLUSPEOPLE\PesaPi\PesaPi();
-$pesa->forceSyncronisation();
+print "Available balance: " . $pesa->availableBalance() . "\n";
 
 ?>

@@ -25,8 +25,10 @@
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
+
+		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi;
+namespace PLUSPEOPLE\PesaPi\Base;
 
 class Database {
 	############## Properties ####################
@@ -41,7 +43,7 @@ class Database {
 	############## Methods #######################
 	# # # # # # # # Initializer # # # # # # # # # #
 	protected function __construct($type) {
-		$this->config = Configuration::instantiate();
+		$this->config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
 		// if we need to use same credentials to the database then we need to use mysql_connect instead of mysql_pconnect.
 		$this->dbId = mysql_pconnect($this->config->getConfig("DatabaseHost" . $type),$this->config->getConfig("DatabaseUser" . $type),$this->config->getConfig("DatabasePassword" . $type), true);
 		if ($this->dbId > 0) {

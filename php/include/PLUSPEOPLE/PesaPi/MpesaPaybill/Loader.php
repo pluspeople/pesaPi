@@ -25,8 +25,10 @@
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
+
+		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi\loader;
+namespace PLUSPEOPLE\PesaPi\PayBill;
 
 class Loader {
 	protected $baseUrl = "https://ke.m-pesa.com";
@@ -197,7 +199,7 @@ class Loader {
 	}
 
 	private function getPassword() {
-		$pwSetting = \PLUSPEOPLE\PesaPi\SettingFactory::factoryByName("MpesaPassword");
+		$pwSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::factoryByName("MpesaPassword");
 		if (is_object($pwSetting) AND $pwSetting->getValueString() != "") {
 			return $pwSetting->getValueString();
 		} else {
@@ -206,7 +208,7 @@ class Loader {
 	}
 
 	private function setPassword($input) {
-		$pwSetting = \PLUSPEOPLE\PesaPi\SettingFactory::factoryByName("MpesaPassword");
+		$pwSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::factoryByName("MpesaPassword");
 		if ($input != "" AND is_object($pwSetting)) {
 			$pwSetting->setValueString($input);
 			$pwSetting->update();

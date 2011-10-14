@@ -25,51 +25,24 @@
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
+
+		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
 namespace PLUSPEOPLE\PesaPi;
 
 class Configuration {
-	static public $singleton = null;
+	static protected $singleton = null;
 
 	protected $configArray=array(
+		/*************************************************************************
+                           General configuration options
+		 *************************************************************************/
     // Enable this feature when in production - in order to disable debuginformation
 		"ProductionMode"				        => false,
 
 		// Enable this feature when you want to run the API against the simulator
 		// The simulator does not use SSL and is more easy to get up and running.
 		"SimulationMode"                => true,
-
-		// Enabling this will allow the system to automatically 
-		// update the scrubbing methods in use. 
-		// Hereby ensuring the system will keep running with
-		// minimum downtime, in case of Safaricom changing any code.
-		"AllowAutoUpdate"             => true,
-
-		// Enabling this feature allows the system to give feedback regarding
-    // errors, problems and performance.
-		// feedback to the developers of Mpesapi - hereby making it
-		// possible to better analyse how to improve the system further.
-		"AllowFeedback"               => true,
-
-		// To ensure the system is a robust as possible you want 
-		// to keep this feature active - By doing so you enable 
-		// method triangulation to ensure it fallsback to a different
-		// method in case one fails.
-		// the downside is slower performance. 
-		"MaxCompatibility"            => true,
-
-		// Callback setup
-		"PaymentReceivedPostback"     => false,
-		"PaymentReceivedUrl"          => "http://www.domain.co.ke/payment_received.php",
-		"PaymentReceivedSecret"       => "&secret=somethingspecial",
-
-		// Mpesa information
-		"MpesaCertificatePath"        => "/PATH/TO/CERTIFICATE.pem",
-		"MpesaLoginName"              => "**LOGIN**",
-		"MpesaPassword"               => "**PASSWORD**",
-		"MpesaCorporation"            => "**ORGANISATION**",
-    "MpesaInitialSyncDate"        => "2011-01-01",    
-		"CookieFolderPath"            => ".",
 
 		// Database settings follow - please note that they are repeated twice
 		"DatabaseHostRead"						=> "localhost",
@@ -81,7 +54,44 @@ class Configuration {
 		"DatabasePasswordWrite"				=> "DB-PASSWORD",
 		"DatabaseDatabaseWrite"				=> "DB-DATABASE",
 
- 		"Version"											=> "0.0.4",
+ 		"Version"											=> "0.1.0",
+		/*************************************************************************
+                            Callback feature of PesaPi
+		 *************************************************************************/
+		// Callback setup
+		"PaymentReceivedPostback"     => false,
+		"PaymentReceivedUrl"          => "http://www.domain.co.ke/payment_received.php",
+		"PaymentReceivedSecret"       => "&secret=somethingspecial",
+
+
+
+		/*************************************************************************
+                          Payment systems configuration
+		 *************************************************************************/
+		//////////////////////////////////
+		// MPESA PAYBILL ACCOUNTS
+		//////////////////////////////////
+
+		// Paybill information
+		"MpesaCertificatePath"        => "/PATH/TO/CERTIFICATE.pem",
+		"MpesaLoginName"              => "**LOGIN**",
+		"MpesaPassword"               => "**PASSWORD**",
+		"MpesaCorporation"            => "**ORGANISATION**",
+    "MpesaInitialSyncDate"        => "2011-01-01",    
+		"CookieFolderPath"            => ".",
+
+
+		//////////////////////////////////
+		// MPESA PRIVATE ACCOUNTS
+		//////////////////////////////////
+
+		// The identifier for the account matching the account identifier in the DB
+		// for the particular account that you want to use for Private Mpesa transactions
+		"MpesaPrivateIdentifier"      => "privatedefault",
+
+		// The secret you have configured SMSSync to provide when posting SMS's into the system.
+		"MpesaPrivateSecret"          => "abc",
+
 	);
 
 

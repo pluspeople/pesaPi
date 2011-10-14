@@ -1,0 +1,14 @@
+Version 0.1.0:
+- Added author credentials to each file
+- Added support for PERSONAL Mpesa accounts utilizing smssync ( http://smssync.ushahidi.com ) by Henry Addo
+- Added a concept of Accounts - allowing PesaPi to handle multiple accounts.
+- Major restructuring of the file-layout to prepare for multiple account types.
+- Added missing .java file
+- Started writing a changelog (this file), to prepare the notes that will eventually go into the Git-commit log
+
+Version 0.0.4:
+- PHP: an issue with the namespace path have been fixed
+- PHP: PesaPi now automatically changes the Mpesa Password when promted to do so.
+- JAVA: Initial code from Kevin Oyugi have been cleaned up and incorporated in the Java port, see readme.txt in java/documentation for usage details
+- CSHARP: Initial code from Jude Okello have been cleaned up and tested with Mono and incorporated in the csharp port - NOTE: not all the csharp code have been incorporated yet just the first few files.
+ 

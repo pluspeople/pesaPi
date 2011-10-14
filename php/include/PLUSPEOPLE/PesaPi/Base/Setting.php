@@ -25,8 +25,10 @@
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
+
+		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi;
+namespace PLUSPEOPLE\PesaPi\Base;
 
 class Setting {
   ############### Properties ####################
@@ -126,7 +128,7 @@ class Setting {
     if ($this->getId() > 0) {
 			$db = Database::instantiate(Database::TYPE_WRITE);
 
-      $query="DELETE	FROM mpesapi_setting
+      $query="DELETE	FROM pesapi_setting
 	       WHERE	id='" . $this->getId() . "'";
       
       return ($db->query($query));
@@ -139,7 +141,7 @@ class Setting {
     if ($this->getId() > 0) {
 			$db = Database::instantiate(Database::TYPE_WRITE);
 
-      $query = "UPDATE	 mpesapi_setting
+      $query = "UPDATE	 pesapi_setting
 	        SET	 id=id ";
 
       $query .= $this->generateUpdateQuery();
@@ -161,7 +163,7 @@ class Setting {
                      value_string, 
                      UNIX_TIMESTAMP(value_date) AS value_date, 
                      value_int 
-               FROM  mpesapi_setting 
+               FROM  pesapi_setting 
                WHERE id='" . $this->getId() . "';";
 
       if ($result = $db->query($query) AND $foo = $db->fetchObject($result)) {

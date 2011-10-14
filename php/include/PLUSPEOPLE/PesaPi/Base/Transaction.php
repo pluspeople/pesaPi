@@ -25,21 +25,17 @@
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
+
+		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi;
+namespace PLUSPEOPLE\PesaPi\Base;
 
-class Payment {
+class Transaction {
   ############### Properties ####################
-	const DEPOSIT = 1;
-	const WITHDRAW = 2;
-
-	const TYPE_PAYMENT_RECIEVED = 1;
-	const TYPE_PAYMENT_CANCELLATION = 2;
-	const TYPE_FUNDS_TRANSFER = 3;
-	const TYPE_FUNDS_CANCELLATION = 4;
-	const TYPE_BUSINESS_CHARGES = 5;
-	const TYPE_BUSINESS_CHARGES_CANCELLATION = 6;
-
+	const MONEY_IN = 1;
+	const MONEY_OUT = 2;
+	const MONEY_NEUTRAL = 3;
+	
 	const STATUS_COMPLETED = 1;
 	const STATUS_DECLINED = 2;
 	const STATUS_CANCELLED = 3;
@@ -47,8 +43,8 @@ class Payment {
 
   protected $id = 0;
   protected $type = 0;
-	protected $transferDirection = 0;
-  protected $reciept = "";
+	protected $superType = 0;
+  protected $receipt = "";
   protected $time = "";
   protected $phonenumber = "";
   protected $name = "";
@@ -57,11 +53,12 @@ class Payment {
   protected $amount = 0;
   protected $postBalance = 0;
 	protected $note = "";
+	protected $transactionCost = 0;
 
   protected $idUpdated = false;
   protected $typeUpdated = false;
-	protected $transferDirectionUpdated = false;
-  protected $recieptUpdated = false;
+	protected $superTypeUpdated = false;
+  protected $receiptUpdated = false;
   protected $timeUpdated = false;
   protected $phonenumberUpdated = false;
   protected $nameUpdated = false;
@@ -70,6 +67,7 @@ class Payment {
   protected $amountUpdated = false;
   protected $postBalanceUpdated = false;
 	protected $noteUpdated = false;
+	protected $transactionCostUpdated = false;
 
   protected $isDataRetrived = false;
 
@@ -94,22 +92,22 @@ class Payment {
     return $this->typeUpdated = true;
   }
 
-  public function getTransferDirection() {
+  public function getSuperType() {
     $this->retriveData();
-    return $this->transferDirection;
+    return $this->superType;
   }
-  public function setTransferDirection($input) {
-    $this->transferDirection = (int)$input;
-    return $this->transferDirectionUpdated = true;
+  public function setSuperType($input) {
+    $this->superType = (int)$input;
+    return $this->superTypeUpdated = true;
   }
 
-  public function getReciept() {
+  public function getReceipt() {
     $this->retriveData();
-    return $this->reciept;
+    return $this->receipt;
   }
-  public function setReciept($input) {
-    $this->reciept = $input;
-    return $this->recieptUpdated = true;
+  public function setReceipt($input) {
+    $this->receipt = $input;
+    return $this->receiptUpdated = true;
   }
 
   public function getTime() {
@@ -184,35 +182,29 @@ class Payment {
     return $this->noteUpdated = true;
   }
 
-  # # # # # # # # misc methods # # # # # # # #
-	public static function import($row) {
-		// NOT DONE
-		$payment = Payment::createNew($row['RECIEPT'], $row['TYPE']);
-		if (is_object($payment)) {
-			$payment->setTransferDirection($row['TRANSFERDIRECTION']);
-			$payment->setTime($row["TIME"]);
-			$payment->setPhonenumber($row['PHONENUMBER']);
-			$payment->setName($row['NAME']);
-			$payment->setAccount($row['ACCOUNT']);
-			$payment->setStatus($row['STATUS']);
-			$payment->setAmount($row['AMOUNT']);
-			$payment->setPostBalance($row['POST_BALANCE']);
-			$payment->setNote($row['NOTE']);
+  public function getTransactionCost() {
+    $this->retriveData();
+    return $this->transactionCosts;
+  }
+  public function setTransactionCost($input) {
+    $this->transactionCost = (int)$input;
+    return $this->transactionCostUpdated = true;
+  }
 
-			$payment->update();
-		}
-	}
-
-	public static function createNew($reciept, $type) {
+  // # # # # # # # misc methods # # # # # # # #
+	public static function createNew($accountId, $superType, $type) {
+		$accountId = (int)$accountId;
+		$superType = (int)$superType;
 		$type = (int)$type;
 
-		if ($type > 0 AND $reciept != "") {
+		if ($accountId > 0 AND $type > 0 AND $superType > 0) {
       $db = Database::instantiate(Database::TYPE_WRITE);
 
-			$query = "INSERT INTO   mpesapi_payment(
+			$query = "INSERT INTO   pesapi_payment(
+                              account_id,
                               type,
-                              transfer_direction,
-                              reciept,
+                              super_type,
+                              receipt,
                               time,
                               phonenumber,
                               name,
@@ -220,11 +212,13 @@ class Payment {
                               status,
                               amount,
                               post_balance,
-                              note)
+                              note,
+                              transaction_cost)
                 VALUES(
+                              '$accountId',
                               '$type',
-                              0,
-                              '" . (string)$reciept . "',
+                              '$superType',
+                              '',
                               '0000-00-00',
                               '',
                               '',
@@ -232,10 +226,11 @@ class Payment {
                               0,
                               0,
                               0,
-                              '')";
+                              '',
+                              0)";
 
 			if ($db->query($query)) {
-				return new Payment($db->insertId());
+				return new Transaction($db->insertId());
 			}
 		}
 		return null;
@@ -245,7 +240,7 @@ class Payment {
     if ($this->getId() > 0) {
 			$db = Database::instantiate(Database::TYPE_WRITE);
 
-      $query="DELETE	FROM mpesapi_payment
+      $query="DELETE	FROM pesapi_payment
 	       WHERE	id='" . $this->getId() . "'";
       
       return ($db->query($query));
@@ -258,7 +253,7 @@ class Payment {
     if ($this->getId() > 0) {
 			$db = Database::instantiate(Database::TYPE_WRITE);
 
-      $query = "UPDATE	 mpesapi_payment
+      $query = "UPDATE	 pesapi_payment
 	        SET	 id=id ";
 
       $query .= $this->generateUpdateQuery();
@@ -276,8 +271,8 @@ class Payment {
 			$db = Database::instantiate(Database::TYPE_READ);	
 		
       $query="SELECT  type, 
-                     transfer_direction,
-                     reciept, 
+                     super_type,
+                     receipt, 
                      UNIX_TIMESTAMP(time) AS time, 
                      phonenumber, 
                      name, 
@@ -285,8 +280,9 @@ class Payment {
                      status, 
                      amount, 
                      post_balance,
-                     note
-               FROM  mpesapi_payment 
+                     note,
+                     transaction_cost
+               FROM  pesapi_payment 
                WHERE id='" . $this->getId() . "';";
 
       if ($result = $db->query($query) AND $foo = $db->fetchObject($result)) {
@@ -303,8 +299,8 @@ class Payment {
     if (is_object($foo)) {
 			$db = Database::instantiate(Database::TYPE_READ);
       $this->type = $foo->type;
-			$this->transferDirection = $foo->transfer_direction;
-      $this->reciept = $foo->reciept;
+			$this->superType = $foo->super_type;
+      $this->receipt = $foo->receipt;
       $this->time = $foo->time;
       $this->phonenumber = $foo->phonenumber;
       $this->name = $db->dbOut($foo->name);
@@ -313,6 +309,7 @@ class Payment {
       $this->amount = $foo->amount;
       $this->postBalance = $foo->post_balance;
 			$this->note = $foo->note;
+			$this->transactionCost = $foo->transaction_cost;
 
       $this->isDataRetrived = true;
     }
@@ -327,14 +324,14 @@ class Payment {
       $this->typeUpdated = false;
     }
 
-    if ($this->transferDirectionUpdated) {
-      $query.=" ,transfer_direction='$this->transferDirection' ";
-      $this->transferDirectionUpdated = false;
+    if ($this->superTypeUpdated) {
+      $query.=" ,super_type='$this->superType' ";
+      $this->superTypeUpdated = false;
     }
 
-    if ($this->recieptUpdated) {
-      $query.=" ,reciept='$this->reciept' ";
-      $this->recieptUpdated = false;
+    if ($this->receiptUpdated) {
+      $query.=" ,receipt='$this->receipt' ";
+      $this->receiptUpdated = false;
     }
 
     if ($this->timeUpdated) {
@@ -377,6 +374,10 @@ class Payment {
       $this->noteUpdated=false;
     }
 
+    if ($this->transactionCostUpdated) {
+      $query.=" ,transaction_cost='$this->transactionCost' ";
+      $this->transactionCostUpdated = false;
+    }
     return $query;
   }
 }

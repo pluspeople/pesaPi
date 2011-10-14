@@ -25,50 +25,40 @@
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
+
+		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi\scrubber;
+namespace PLUSPEOPLE\PesaPi\MpesaPaybill;
 
-class Scrubber {
-	const VERSION = "1.0";
+class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
+	// Extended attributes
+	const MPESA_PAYBILL_PAYMENT_RECIEVED = 1;
+	const MPESA_PAYBILL_PAYMENT_CANCELLATION = 2;
+	const MPESA_PAYBILL_FUNDS_TRANSFER = 3;
+	const MPESA_PAYBILL_FUNDS_CANCELLATION = 4;
+	const MPESA_PAYBILL_BUSINESS_CHARGES = 5;
+	const MPESA_PAYBILL_BUSINESS_CHARGES_CANCELLATION = 6;
 
-	public static function numberInput($input) {
-		$input = trim($input);
-		$amount = 0;
 
-		if (preg_match("/^[0-9,]+$/", $input)) {
-			$amount = 100 * (int)str_replace(',', '', $input);
-		} elseif (preg_match("/^[0-9,]+\.[0-9]$/", $input)) {
-			$amount = 10 * (int)str_replace(array('.', ','), '', $input);
-		} elseif (preg_match("/^[0-9,]*\.[0-9][0-9]$/", $input)) {
-			$amount = (int)str_replace(array('.', ','), '', $input);
-		} else {
-			$amount = (int)$input;
+	public static function import($row) {
+		// NOT DONE
+		$payment = Transaction::createNew($row['RECIEPT'], $row['TYPE']);
+		if (is_object($payment)) {
+			$payment->setSuperType($row['TRANSFERDIRECTION']); // not done
+			$payment->setTime($row["TIME"]);
+			$payment->setPhonenumber($row['PHONENUMBER']);
+			$payment->setName($row['NAME']);
+			$payment->setAccount($row['ACCOUNT']);
+			$payment->setStatus($row['STATUS']);
+			$payment->setAmount($row['AMOUNT']);
+			$payment->setPostBalance($row['POST_BALANCE']);
+			$payment->setNote($row['NOTE']);
+
+			$payment->update();
 		}
-		return $amount;
 	}
 
-	public static function dateInput($input) {
-		$timeStamp = strtotime($input);
-		if ($timeStamp != FALSE) {
-			return $timeStamp;
-		}
-		return 0;
-	}
-
-	public static function ScrubRows(&$data) {
-		$result = array();
-		$rows = HTMLPaymentScrubber1::scrubPaymentRows($data);
-
-		foreach($rows AS $row) {
-			$result[] = HTMLPaymentScrubber1::scrubPayment($row);
-		}
-
-		// return the reverse array - we want the oldest first
-		return $result;
-	}
 
 }
-
-
 
 ?>

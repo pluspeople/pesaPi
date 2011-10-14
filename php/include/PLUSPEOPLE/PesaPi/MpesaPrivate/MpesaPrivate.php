@@ -28,12 +28,60 @@
 
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
+namespace PLUSPEOPLE\PesaPi\MpesaPrivate;
+use PLUSPEOPLE\PesaPi\Base\Database;
+use PLUSPEOPLE\PesaPi\Base\TransactionFactory;
 
-// default timezone setting. - should be set on a per-server setup.
-date_default_timezone_set("Africa/Nairobi");
+class MpesaPrivate extends \PLUSPEOPLE\PesaPi\Base\Account { 
 
-function __autoload($class) {
-	$fileName = str_replace("\\", "/", $class) . ".php";
-	require_once($fileName);
+	public function availableBalance($time = null) {
+		$time = (int)$time;
+		if (0 == $time) {
+			$time = time();
+		}
+
+		$balance = \PLUSPEOPLE\PesaPi\Base\TransactionFactory::factoryOneByTime($this, $time);
+		if (is_object($balance)) {
+			return $balance->getPostBalance();
+		}
+		return $amount;
+	}
+
+	public function locateByReceipt($receipt) {
+		return TransactionFactory::factoryByReceipt($this, $receipt);
+	}
+
+	public function initTransaction($id, $initValues = null) {
+		return new Transaction($id, $initValues);
+	}
+
+	public function importTransaction($message) {
+		if ($message != "") {
+			$parser = new PersonalParser();
+			$temp = $parser->parse($message);
+
+			$transaction = Transaction::createNew($this->getId(), $temp['SUPER_TYPE'], $temp['TYPE']);
+			$transaction->setReceipt($temp['RECEIPT']);
+			$transaction->setTime($temp["TIME"]);
+			$transaction->setPhonenumber($temp['PHONE']);
+			$transaction->setName($temp['NAME']);
+			$transaction->setAccount($temp['ACCOUNT']);
+			$transaction->setStatus($temp['STATUS']);
+			$transaction->setAmount($temp['AMOUNT']);
+			$transaction->setPostBalance($temp['BALANCE']);
+			$transaction->setNote($temp['NOTE']);
+ 			$transaction->setTransactionCost($temp['COSTS']);
+			
+			$transaction->update();
+
+			// Callback if needed
+			$this->handleCallback($transaction);
+
+			return $transaction;
+		}
+		return null;
+	}
+
 }
+
 ?>

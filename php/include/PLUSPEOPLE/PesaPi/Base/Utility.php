@@ -28,12 +28,32 @@
 
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
+namespace PLUSPEOPLE\PesaPi\Base;
 
-// default timezone setting. - should be set on a per-server setup.
-date_default_timezone_set("Africa/Nairobi");
+class Utility {
+	public static function numberInput($input) {
+		$input = trim($input);
+		$amount = 0;
 
-function __autoload($class) {
-	$fileName = str_replace("\\", "/", $class) . ".php";
-	require_once($fileName);
+		if (preg_match("/^[0-9,]+$/", $input)) {
+			$amount = 100 * (int)str_replace(',', '', $input);
+		} elseif (preg_match("/^[0-9,]+\.[0-9]$/", $input)) {
+			$amount = 10 * (int)str_replace(array('.', ','), '', $input);
+		} elseif (preg_match("/^[0-9,]*\.[0-9][0-9]$/", $input)) {
+			$amount = (int)str_replace(array('.', ','), '', $input);
+		} else {
+			$amount = (int)$input;
+		}
+		return $amount;
+	}
+
+	public static function dateInput($input) {
+		$timeStamp = strtotime($input);
+		if ($timeStamp != FALSE) {
+			return $timeStamp;
+		}
+		return 0;
+	}
 }
+
 ?>

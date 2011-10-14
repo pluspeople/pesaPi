@@ -25,8 +25,12 @@
 		LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 		OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 		SUCH DAMAGE.
+
+		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
 namespace PLUSPEOPLE\PesaPi;
+use PLUSPEOPLE\PesaPi\Base\Database;
+use PLUSPEOPLE\PesaPi\MpesaPaybill\Transaction;
 
 /*
 	This is the main interface to the Mpesa API.
@@ -40,7 +44,7 @@ class PesaPi {
 	public function __construct() {
 		$this->config = Configuration::instantiate();
 		$this->initSyncDate = strtotime($this->config->getConfig('MpesaInitialSyncDate'));
-		$this->lastSyncSetting = SettingFactory::FactoryByName("LastSync");
+		$this->lastSyncSetting = Base\SettingFactory::FactoryByName("LastSync");
 	}
 
 	/* This method returns the balance of the mpesa account at the specified point in time.
@@ -49,30 +53,17 @@ class PesaPi {
 		 which we have not yet been informed about.
 		 The specified time is represented in a unix timestamp.
 	*/
-	public function availableBalance($time = null) {
+	public function availableBalance($identifier = "", $time = null) {
 		$time = (int)$time;
-		$lastSync = $this->lastSyncSetting->getValue();
 		$amount = 0;
 
-		if ($lastSync < $time) {
-			// we must have data all the way up to the specified time.
-			$this->forceSyncronisation();
-		}
-		
-		$db = Database::instantiate(Database::TYPE_READ);
-		$query = "SELECT post_balance
-							FROM  mpesapi_payment
-              WHERE time <= FROM_UNIXTIME('$time')
-              ORDER BY time DESC
-              LIMIT 0,1";
+		// first locate the correct accounts to opperate on.
+		$accounts = $this->getAccount($identifier);
 
-		if ($result = $db->query($query)) {
-			if ($foo = $db->fetchObject($result)) {
-				$amount = $foo->post_balance;
-			}
-			$db->freeResult($result);
+		// then sum all the account balances.
+		foreach ($accounts AS $account) {
+			$amount += $account->availableBalance($time);
 		}
-
 		return $amount;
 	}
 
@@ -83,13 +74,17 @@ class PesaPi {
 		 For extra security you might consider confirming that the phonenumber
 		 of the returned transaction match the users phonenumber.
 	*/
-	public function locateByReciept($reciept) {
-		$payment = PaymentFactory::factoryByReciept($reciept);
-		if ($payment == null) {
-			$this->forceSyncronisation();
-			$payment = PaymentFactory::factoryByReciept($reciept);
+	public function locateByReceipt($receipt, $identifier = "") {
+		$transactions = array();
+
+		// first locate the correct accounts to opperate on.
+		$accounts = $this->getAccount($identifier);
+
+		// then locate receipts
+		foreach ($accounts AS $account) {
+			$transactions = array_merge($transactions, $account->locateByReceipt($receipt));
 		}
-		return $payment;
+		return $transactions;
 	}
 
 	/* This method locates all payments performed by a given phonenumber
@@ -97,23 +92,17 @@ class PesaPi {
 		 If at all possible try not to use an until value all the way up 
 		 until now since that will greatly enhance performance. 
 	*/
-	public function locateByPhone($phone, $from=0, $until=0) {
-		$lastSync = $this->lastSyncSetting->getValue();
+	public function locateByPhone($phone, $identifier = "", $from=0, $until=0) {
+		$transactions = array();
 
-		// never go before initial sync date (not reliable to do so)
-		if ($from <= 0 OR $from < $this->initSyncDate) {
-			$from = $this->initSyncDate;
-		}
+		// first locate the correct accounts to opperate on.
+		$accounts = $this->getAccount($identifier);
 
-		// default is up until last sync, and no later to enhance default performance
-		if ($until <= 0) {
-			$until = $lastSync;
+		// then locate receipts
+		foreach ($accounts AS $account) {
+			$transactions = array_merge($transactions, $account->locateByPhone($phone));
 		}
-
-		if ($until > $lastSync) {
-			$this->forceSyncronisation();
-		}
-		return PaymentFactory::factoryByPhone($phone, $from, $until);
+		return $transactions;
 	}
 
 	/* this method locates all the payments by a specific client name
@@ -122,22 +111,17 @@ class PesaPi {
 		 Be alert that mobile users might have there records changed i.e. 
 		 if Safaricom mistyped there name.
 	*/
-	public function locateByName($name, $from=0, $until=0) {
-		$lastSync = $this->lastSyncSetting->getValue();
+	public function locateByName($name, $identifier="", $from=0, $until=0) {
+		$transactions = array();
 
-		// never go before initial sync date (not reliable to do so)
-		if ($from <= 0 OR $from < $this->initSyncDate) {
-			$from = $this->initSyncDate;
-		}
-		if ($until <= 0) {
-			$until = $lastSync;
-		}
+		// first locate the correct accounts to opperate on.
+		$accounts = $this->getAccount($identifier);
 
-		// default is up until last sync, and no later to enhance default performance
-		if ($until > $lastSync) {
-			$this->forceSyncronisation();
+		// then locate receipts
+		foreach ($accounts AS $account) {
+			$transactions = array_merge($transactions, $account->locateByName($name, $from, $until));
 		}
-		return PaymentFactory::factoryByName($name, $from, $until);
+		return $transactions;
 	}
 
 	/* When using the paybill metod of a commercial account, the mobile user
@@ -146,44 +130,33 @@ class PesaPi {
 		 Be alert that it is higly likely that users mistype the account 
      number: ie. "bb 123" vs. "bb123"
 	*/
-	public function locateByAccount($account, $from=0, $until=0) {
-		$lastSync = $this->lastSyncSetting->getValue();
+	public function locateByAccount($account, $identifier="", $from=0, $until=0) {
+		$transactions = array();
 
-		// never go before initial sync date (not reliable to do so)
-		if ($from <= 0 OR $from < $this->initSyncDate) {
-			$from = $this->initSyncDate;
-		}
-		if ($until <= 0) {
-			$until = $lastSync;
-		}
+		// first locate the correct accounts to opperate on.
+		$accounts = $this->getAccount($identifier);
 
-		// default is up until last sync, and no later to enhance default performance
-		if ($until > $lastSync) {
-			$this->forceSyncronisation();
+		// then locate receipts
+		foreach ($accounts AS $account) {
+			$transactions = array_merge($transactions, $account->locateByAccount($name, $from, $until));
 		}
-		return PaymentFactory::factoryByAccount($account, $from, $until);
+		return $transactions;
 	}
 
 	/* The method locates all payments within a particular time interval
 		 plain and simple.
 	*/
 	public function locateByTimeInterval($from, $until, $type) {
-		$type = (int)$type;
-		$lastSync = $this->lastSyncSetting->getValue();
+		$transactions = array();
 
-		// never go before initial sync date (not reliable to do so)
-		if ($from <= 0 OR $from < $this->initSyncDate) {
-			$from = $this->initSyncDate;
-		}
-		if ($until <= 0) {
-			$until = $lastSync;
-		}
+		// first locate the correct accounts to opperate on.
+		$accounts = $this->getAccount($identifier);
 
-		// default is up until last sync, and no later to enhance default performance
-		if ($until > $lastSync) {
-			$this->forceSyncronisation();
+		// then locate receipts
+		foreach ($accounts AS $account) {
+			$transactions = array_merge($transactions, $account->locateByTimeInterval($from, $until, $type));
 		}
-		return PaymentFactory::factoryByTimeInterval($from, $until, $type);
+		return $transactions;
 	}
 
 	
@@ -196,7 +169,7 @@ class PesaPi {
 		if ($phone != "") {
 			$db = Database::instantiate(Database::TYPE_READ);
 			$query = "SELECT DISTINCT name
-							FROM  mpesapi_payment
+							FROM  pesapi_payment
               WHERE phonenumber = '" . $db->dbIn($phone) . "'
               ORDER BY time DESC
               LIMIT 0,1";
@@ -221,7 +194,7 @@ class PesaPi {
 		if ($name != "") {
 			$db = Database::instantiate(Database::TYPE_READ);
 			$query = "SELECT DISTINCT phonenumber
-							FROM  mpesapi_payment
+							FROM  pesapi_payment
               WHERE name = '" . $db->dbIn($name) . "'
               ORDER BY time DESC
               LIMIT 0,1";
@@ -237,74 +210,19 @@ class PesaPi {
 	}
 
 
-
 	/* This method performs a syncronisation between the safaricom database
 		 and the local database. 
 		 Warning: Although possible, you should never ever have to call this method directly
 	*/
 	public function forceSyncronisation() {
-		// determine the start time
-		$lastSync = $this->lastSyncSetting->getValue();
-		if ($lastSync <= $this->initSyncDate) {
-			$startSyncTime = $this->initSyncDate;
-		} else {
-			$startSyncTime = $lastSync;
+		// first locate accounts.
+		$accounts = $this->getAccount("");
+
+		// then syncronise
+		foreach ($accounts AS $account) {
+			$account->forceSyncronisation();
 		}
-		$startSyncTime -= 1;
-		$now = time();
-
-		// perform file fetch
-		$loader = new loader\Loader();
-		$pages = $loader->retrieveData($startSyncTime);
-
-		// perform analysis/scrubbing
-		$scrubber = new scrubber\Scrubber();
-		foreach ($pages AS $page) {
-			$rows = $scrubber->scrubRows($page);
-			// save data to database
-			foreach ($rows AS $row) {
-				$payment = Payment::import($row);
-
-				if (is_object($payment)) {
-					switch($payment->getType()) {
-					case Payment::TYPE_PAYMENT_RECIEVED:
-						$url = $this->config->getConfig("PaymentReceivedUrl");
-						if ($this->config->getConfig("PaymentReceivedPostback") AND $url != "") {
-
-							$postData = 
-								'amount=' . $payment->getAmount() . 
-								'&account=' . urlencode($payment->getAccount()) . 
-								'&name=' . urlencode($payment->getName()) . 
-								'&mobile=' . urlencode($payment->getPhonenumber()) . 
-								'&time=' . $payment->getTime();
-							$postData .= $this->config->getConfig("PaymentReceivedSecret");
-
-							$curl = curl_init($url);
-
-							curl_setopt($curl, CURLOPT_URL, $url);
-							curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-							curl_setopt($curl, CURLOPT_COOKIESESSION, false);
-							curl_setopt($curl, CURLOPT_HEADER, false);
-							curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-							curl_setopt($curl, CURLOPT_POST, true);
-							curl_setopt($curl, CURLOPT_POSTFIELDS, $postData); 
-
-							$status = curl_exec($curl);
-							// check if creation went ok.
-							if ($status == "OK") { // expect an OK returned from the recepiant
-								// feeback is ok.
-							}
-						}
-						break;
-					}
-				}
-
-			}
-		}
-
-		// save last entry time as last sync
-		$this->lastSyncSetting->setValueDate($now);
-		$this->lastSyncSetting->update();
+		return true;
 	}
 
 
@@ -314,6 +232,19 @@ class PesaPi {
 
 	public function getErrorMessage() {
 		return "";
+	}
+
+	public function getAccount($identifier) {
+		if ($identifier != "") {
+			$accounts = array();
+			$account =  Base\AccountFactory::factoryByIdentifier($identifier);
+			if (is_object($account)) {
+				$accounts[] = $account;
+			}
+		} else {
+			$accounts = Base\AccountFactory::factoryAll();
+		}
+		return $accounts;
 	}
 
 }
