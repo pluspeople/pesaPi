@@ -79,6 +79,7 @@ class Configuration {
 		"MpesaCorporation"            => "**ORGANISATION**",
     "MpesaInitialSyncDate"        => "2011-01-01",    
 		"CookieFolderPath"            => ".",
+		"AdminEmail"                  => "your@email.com",
 
 
 		//////////////////////////////////

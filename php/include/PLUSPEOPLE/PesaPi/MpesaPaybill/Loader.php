@@ -42,6 +42,8 @@ class Loader {
 			$this->baseUrl = "http://www.pesapi.ke";
 		}
 
+		$this->cookieFile = tmpfile();
+
 		$this->curl = curl_init($this->baseUrl);
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($this->curl, CURLOPT_COOKIESESSION, true);
@@ -60,15 +62,18 @@ class Loader {
 		$fromTime = (int)$fromTime;
 		$pages = array();
 		if ($fromTime > 0) {
-			$cookiePath = $this->config->getConfig("CookieFolderPath") . time() . "jarjar.txt";
-			$this->cookieFile = fopen($cookiePath, 'w');
 			$search = $this->loadSearchPage();
 			if (preg_match("/<h3>Operator Password Change<\/h3>/", $search) > 0) {
 				$search = $this->changePassword($search);
+			} elseif (preg_match("/Your account has been locked\.\s+Please contact your administrator to have your account unlocked\./", $search) > 0) {
+				$toEmail = $this->config->getConfig("AdminEmail");
+				if ($toEmail != "") {
+					$message = "Your paybill account has been locked - you need to take manual action to have it unlocked";
+					mail($toEmail, "PesaPi alert", $message);
+				}
+				exit();
 			}
 			$pages = $this->loadResults($search, $fromTime);
-			fclose($this->cookieFile);
-			unlink($cookiePath);
 		}
 		// return the reverse array - we want the oldest data first.
 		return array_reverse($pages);
@@ -173,6 +178,12 @@ class Loader {
 		$viewState = $this->getViewState($page);
 		$oldPassword = $this->getPassword();
 		
+		$toEmail = $this->config->getConfig("AdminEmail");
+		if ($toEmail != "") {
+			$message = "PesaPi is changing your password";
+			mail($toEmail, "PesaPi information", $message);
+		}
+
 		// generate new pw - NOT very secure!
 		$temp = array();
 		preg_match_all("/(.*)(\d+)$/", $oldPassword, $temp);
@@ -187,6 +198,8 @@ class Loader {
 			'__VIEWSTATE=' . urlencode($viewState) .
 			'&OperatorPasswordChangeControl1$txtPassword=' . urlencode($newPassword) . 
 			'&OperatorPasswordChangeControl1$txtConfirm=' . urlencode($newPassword) . 
+			'&OperatorPasswordChangeControl1$txtSecurityQuestion=' . 'favorite country' . 
+      '&OperatorPasswordChangeControl1$txtSecurityAnswer=' . 'kenya' . // HARDCODED
 			'&btnUpdatePassword=' . urlencode('Update Password'); 
 		
 		curl_setopt($this->curl, CURLOPT_URL, $this->baseUrl . "/ke/default.aspx?ReturnUrl=%2fke%2fMain%2fhome2.aspx%3fMenuID%3d1826&amp;MenuID=1826");

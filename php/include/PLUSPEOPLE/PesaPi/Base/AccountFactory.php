@@ -97,10 +97,18 @@ identifier ";
     case Account::MPESA_PRIVATE:
       $object = new \PLUSPEOPLE\PesaPi\MpesaPrivate\MpesaPrivate($id, $initValues);
     break;
+    case Account::KENYA_YU_PRIVATE:
+      $object = new \PLUSPEOPLE\PesaPi\KenyaYuPrivate\Account($id, $initValues);
+    break;
+    case Account::GHANA_AIRTEL_PRIVATE:
+      $object = new \PLUSPEOPLE\PesaPi\GhanaAirtelPrivate\Account($id, $initValues);
+    break;
+    case Account::RWANDA_MTN_PRIVATE:
+      $object = new \PLUSPEOPLE\PesaPi\RwandaMTNPrivate\Account($id, $initValues);
+    break;
     }
     return $object;
   }
-
 
 }
 ?>

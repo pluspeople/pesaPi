@@ -2,11 +2,20 @@ PesaPI
 =======
 PesaPI is an unofficial open source API for mobile money systems, released under the BSD(lite) license.  
 The system currently support:
-* Mpesa paybill numbers
-* Mpesa private numbers
+* Kenya: Mpesa paybill accounts
+* Kenya: Mpesa private accounts
+* Kenya: Yu private accounts (experimental)
+* Ghana: Airtel private accounts (experimental)
+* Rwanda: MNT private accounts (experimental)
 
 The API supports both PUSH and PULL versions.
 The PHP version of the API is generally the most mature and recomended at this point - the system is build using Mysql and Curl.
+Please direct all questions to the public mailing-list "pesaPi" on Google-groups: http://groups.google.com/group/pesapi
+
+
+Short example
+-------------
+<iframe width="420" height="315" src="http://www.youtube.com/embed/bQ3AuBuFIM0" frameborder="0" allowfullscreen></iframe>
 
 
 Current status

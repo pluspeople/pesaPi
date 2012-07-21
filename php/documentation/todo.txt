@@ -11,3 +11,13 @@
 - scrubbing of xslt + triangulation.
 
 - feedback system
+
+- IPN support
+
+- YU cash support
+
+- MTL Rwanda support
+
+- Airtel Ghana support
+
+- Support for multiple feeds to same account.
