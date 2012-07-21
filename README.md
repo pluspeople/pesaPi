@@ -15,9 +15,8 @@ Please direct all questions to the public mailing-list "pesaPi" on Google-groups
 
 Short example
 -------------
-
-<iframe width="420" height="315" src="http://www.youtube.com/embed/bQ3AuBuFIM0" frameborder="0" allowfullscreen>
-</iframe>
+For a short usage example please see:
+http://www.youtube.com/gifair
 
 
 Current status
