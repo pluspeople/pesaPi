@@ -44,7 +44,7 @@ class HTMLPaymentScrubber1 {
 
 		preg_match_all('/<tr class="Grid(Alt)?Row_Default">.+<\/tr>/Umsi', $rawtext, $temp);
 
-		return $temp[0];
+		return array_reverse($temp[0]);
 	} 
 
 	static public function scrubPayment(&$rawtext) {
@@ -110,7 +110,7 @@ class HTMLPaymentScrubber1 {
 
 		// Transaction details
 		$matches = array();
-		if (preg_match('/<td.*>\s*Payment received from\s*([0-9]+)\s*-\s+(.*)\s+Acc\.\s*(.*)\s*<\/td\s*>/iU', $rawtext, $matches) > 0) {
+		if (preg_match('/<td.*>\s*Payment received from\s*([0-9]+)\s+-?\s*([^-]*)\s+Acc\.\s*(.*)\s*<\/td\s*>/iU', $rawtext, $matches) > 0) {
 			$temp['PHONENUMBER'] = trim($matches[1]);
 			$temp['NAME'] = trim($matches[2]);
 			$temp['ACCOUNT'] = trim($matches[3]);
