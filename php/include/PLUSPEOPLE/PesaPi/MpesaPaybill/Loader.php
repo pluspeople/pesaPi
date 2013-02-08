@@ -163,7 +163,7 @@ class Loader {
 		preg_match('/ctl00\$Main\$ctl00\$cbAccountType.+ScrollDownDisabled\.gif"\},\[(.+)]\);<\/script>/U', $input, $temp);
 		
 		if (isset($temp[1])) {
-			preg_match_all('/{"Value":"([0-9]+)","Text":"(.+)","/U', $temp[1], $temp);
+			preg_match_all('/{"Text":"(.+)","Value":"([0-9]+)","/U', $temp[1], $temp);
 			
 			for ($i = 0; $i < count($temp[1]); $i++) {
 				if (isset($temp[2][$i])) {
