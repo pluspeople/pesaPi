@@ -160,15 +160,13 @@ class Loader {
 	private function findAccounts($input) {
 		$results = array();
 		$temp = array();
-		preg_match('/ctl00\$Main\$ctl00\$cbAccountType.+ScrollDownDisabled\.gif"\},\[(.+)]\);<\/script>/U', $input, $temp);
-		
+		preg_match('/ctl00\$Main\$ctl00\$cbAccountType.+ScrollDownDisabled\.gif"\},(\[.+])\);<\/script>/U', $input, $temp);
+
 		if (isset($temp[1])) {
-			preg_match_all('/{"Text":"(.+)","Value":"([0-9]+)","/U', $temp[1], $temp);
-			
-			for ($i = 0; $i < count($temp[1]); $i++) {
-				if (isset($temp[2][$i])) {
-					$results[] = array($i, $temp[1][$i], $temp[2][$i]);
-				}
+			$accounts = json_decode($temp[1]);
+			$count = 0;
+			foreach ($accounts AS $account) {
+				$results[] = array($count++, $account->Text, $account->Value);
 			}
 		}
 		return $results;
