@@ -26,6 +26,13 @@ MICHAEL FEDERSEN 254729901555
 on 15/10/11 at 11:52 AM
 New M-PESA balance is Ksh400.00.Save & get a loan on Mshwari';
 
+Example 3.
+$example = "DT82ZD611 Confirmed.
+You have received Ksh5,500.00 from
+ALEX NDUNG'U 254723784491
+on 31/7/13 at 3:08 PM
+New M-PESA balance is Ksh5,844.00.Save & get a loan on Mshwari";
+
 -----------------------------------
 Notifications when an error occours.
 

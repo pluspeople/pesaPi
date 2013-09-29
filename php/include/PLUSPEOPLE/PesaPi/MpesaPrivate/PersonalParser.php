@@ -56,7 +56,7 @@ class PersonalParser {
 			$result["SUPER_TYPE"] = Transaction::MONEY_IN;
 
 			$temp = array();
-			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+You have received Ksh([0-9\.\,]+00) from[\s\n]+([A-Z ]+) ([0-9]+)[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+You have received Ksh([0-9\.\,]+00) from[\s\n]+([A-Z ']+) ([0-9]+)[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
 			if (isset($temp[1][0])) {
 				$result["TYPE"] = Transaction::MPESA_PRIVATE_PAYMENT_RECEIVED;
 				$result["RECEIPT"] = $temp[1][0];
@@ -67,7 +67,7 @@ class PersonalParser {
 				$result["BALANCE"] = Utility::numberInput($temp[7][0]);
 
 			} else {
-				preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+You have received Ksh([0-9\.\,]+00) from[\s\n]+([0-9]+) - ([A-Z ]+) [\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
+				preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+You have received Ksh([0-9\.\,]+00) from[\s\n]+([0-9]+) - ([A-Z ']+) [\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
 				if (isset($temp[1][0])) {
 					$result["TYPE"] = Transaction::MPESA_PRIVATE_B2C_RECEIVED;
 					$result["RECEIPT"] = $temp[1][0];
@@ -114,7 +114,7 @@ class PersonalParser {
 			$result["TYPE"] = Transaction::MPESA_PRIVATE_PAYMENT_SENT;
 
 			$temp = array();
-			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+Ksh([0-9\.\,]+00) sent to ([A-Z ]+) ([0-9]+) on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+Ksh([0-9\.\,]+00) sent to ([A-Z ']+) ([0-9]+) on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
 			if (isset($temp[1][0])) {
 				$result["RECEIPT"] = $temp[1][0];
 				$result["AMOUNT"] = Utility::numberInput($temp[2][0]);
