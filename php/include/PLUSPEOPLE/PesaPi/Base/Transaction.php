@@ -184,7 +184,7 @@ class Transaction {
 
   public function getTransactionCost() {
     $this->retriveData();
-    return $this->transactionCosts;
+    return $this->transactionCost;
   }
   public function setTransactionCost($input) {
     $this->transactionCost = (int)$input;

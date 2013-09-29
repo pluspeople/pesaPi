@@ -50,9 +50,12 @@ class Account {
 
   protected $isDataRetrived = false;
 
+	protected $config = null;
+
   # # # # # # # # Initializer # # # # # # # # # #
   public function __construct($id, $initValues=NULL) {
     $this->id = (int)$id;
+		$this->config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
     #initValues is an object with values for fast restoring state (optimisation)
     if (isset($initValues)) {
       $this->assignValues($initValues);
@@ -121,35 +124,56 @@ class Account {
   }
 
 	protected function handleCallback($transaction) {
-		// NOT DONE
-						/*
-						if ($this->config->getConfig("PaymentReceivedPostback") AND $url != "") {
+		switch ($transaction->getSuperType()) {
+		case Transaction::MONEY_IN:
+			if ($this->config->getConfig("MoneyInCallback")) {
+				$url = trim($this->config->getConfig("MoneyInUrl"));
+				$secret = $this->config->getConfig("MoneyInSecret");
+				return $this->performCallback($transaction, $url, $secret);
+			}
+			break;
+		case Transaction::MONEY_OUT:
+			if ($this->config->getConfig("MoneyOutCallback")) {
+				$url = trim($this->config->getConfig("MoneyOutUrl"));
+				$secret = $this->config->getConfig("MoneyOutSecret");
+				return $this->performCallback($transaction, $url, $secret);
+			}
+			break;
+		}
+		return false;
+	}
 
-							$postData = 
-								'amount=' . $payment->getAmount() . 
-								'&account=' . urlencode($payment->getAccount()) . 
-								'&name=' . urlencode($payment->getName()) . 
-								'&mobile=' . urlencode($payment->getPhonenumber()) . 
-								'&time=' . $payment->getTime();
-							$postData .= $this->config->getConfig("PaymentReceivedSecret");
-
-							$curl = curl_init($url);
-
-							curl_setopt($curl, CURLOPT_URL, $url);
-							curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-							curl_setopt($curl, CURLOPT_COOKIESESSION, false);
-							curl_setopt($curl, CURLOPT_HEADER, false);
-							curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-							curl_setopt($curl, CURLOPT_POST, true);
-							curl_setopt($curl, CURLOPT_POSTFIELDS, $postData); 
-
-							$status = curl_exec($curl);
-							// check if creation went ok.
-							if ($status == "OK") { // expect an OK returned from the recepiant
-								// feeback is ok.
-							}
-						}
-						*/
+	protected function performCallback($transaction, $url, $secret) {
+		// TODO: Needs to be able to automatically resent in case "OK" is not received
+		if ($url != "") {
+			$postData = 
+				'type=' . $transaction->getType() .
+				'&receipt=' . $transaction->getReceipt() .
+				'&time=' . $transaction->getTime() .
+				'&phonenumber=' . urlencode($transaction->getPhonenumber()) . 
+				'&name=' . urlencode($transaction->getName()) . 
+				'&account=' . urlencode($transaction->getAccount()) . 
+				'&amount=' . $transaction->getAmount() . 
+				'&postbalance=' . $transaction->getPostBalance() .
+				'&transactioncost=' . $transaction->getTransactionCost() .
+				'&note=' . urlencode($transaction->getNote());
+			$postData .= $secret;
+			
+			$curl = curl_init($url);
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($curl, CURLOPT_POST, true);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $postData); 
+			
+			$status = curl_exec($curl);
+			// check if creation went ok.
+			if ($status == "OK") { // expect an OK returned from the recepiant
+				// feeback is ok.
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public function forceSyncronisation() {

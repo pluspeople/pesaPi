@@ -34,4 +34,20 @@ $example = 'Failed. The entered phone number is incorrect
 07221889563.';
 
 -----------------------------------
+Notifications when depositing cash money into your mpesa account
 
+$example = 'DQ94ZE762 Confirmed.
+on 3/7/13 at 9:07 AM
+Give Ksh1,000.00 cash to Digital Africa Services Jolet Supermarket
+New M-PESA balance is Ksh1,338.00';
+
+-----------------------------------
+Notifications when you send another person money
+
+$example = 'DZ12GX874 Confirmed. Ksh2,100.00 sent to BRIAN MBUGUA 0723447655 on 17/9/13 at 3:16 PM New M-PESA balance is Ksh106.00.PIN YAKO SIRI YAKO';
+
+-----------------------------------
+Notifications when you buy Airtime for yourself
+
+$example = 'DZ55IX312 confirmed. You bought Ksh100.00 of airtime on 21/9/13 at 5:51 PM
+New M-PESA balance is Ksh6.00.Safaricom only calls you from 0722000000';

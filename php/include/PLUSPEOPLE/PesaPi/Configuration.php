@@ -59,10 +59,12 @@ class Configuration {
                             Callback feature of PesaPi
 		 *************************************************************************/
 		// Callback setup
-		"PaymentReceivedPostback"     => false,
-		"PaymentReceivedUrl"          => "http://www.domain.co.ke/payment_received.php",
-		"PaymentReceivedSecret"       => "&secret=somethingspecial",
-
+		"MoneyInCallback"     => false,
+		"MoneyInUrl"          => "http://www.domain.co.ke/payment_received.php",
+		"MoneyInSecret"       => "&secret=somethingspecial",
+		"MoneyOutCallback"     => false,
+		"MoneyOutUrl"          => "http://www.domain.co.ke/payment_sent.php",
+		"MoneyOutSecret"       => "&secret=somethingspecial",
 
 
 		/*************************************************************************
