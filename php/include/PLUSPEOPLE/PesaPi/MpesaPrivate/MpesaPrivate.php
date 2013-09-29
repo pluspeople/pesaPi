@@ -70,7 +70,7 @@ class MpesaPrivate extends \PLUSPEOPLE\PesaPi\Base\Account {
 			$transaction->setAmount($temp['AMOUNT']);
 			$transaction->setPostBalance($temp['BALANCE']);
 			$transaction->setNote($temp['NOTE']);
- 			$transaction->setTransactionCost($temp['COSTS']);
+ 			$transaction->setTransactionCost($temp['COST']);
 			
 			$transaction->update();
 

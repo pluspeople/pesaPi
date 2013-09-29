@@ -20,11 +20,11 @@ on 15/10/11 at 11:52 AM
 New M-PESA balance is Ksh100.00';
 
 Example 2.
-$example = 'BS49OR301 Confirmed.
-You have received Ksh50.00 from
+$example = 'BS39OR301 Confirmed.
+You have received Ksh350.00 from
 MICHAEL FEDERSEN 254729901555
 on 15/10/11 at 11:52 AM
-New M-PESA balance is Ksh100.00.Save & get a loan on Mshwari';
+New M-PESA balance is Ksh400.00.Save & get a loan on Mshwari';
 
 -----------------------------------
 Notifications when an error occours.
@@ -32,6 +32,9 @@ Notifications when an error occours.
 Example 1.
 $example = 'Failed. The entered phone number is incorrect
 07221889563.';
+
+$example = 'Failed. M-PESA is temporarily unable to authorise airtime purchase of Ksh100.00.
+Please try again later.';
 
 -----------------------------------
 Notifications when depositing cash money into your mpesa account
@@ -51,3 +54,10 @@ Notifications when you buy Airtime for yourself
 
 $example = 'DZ55IX312 confirmed. You bought Ksh100.00 of airtime on 21/9/13 at 5:51 PM
 New M-PESA balance is Ksh6.00.Safaricom only calls you from 0722000000';
+
+-----------------------------------
+Notification when you do a balance request
+
+$example = 'DQ91IB986 Confirmed.
+Your M-PESA balance was Ksh339.00
+on 2/7/13 at 6:46 PM.Safaricom only calls you from 0722000000';

@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2013, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,8 @@ class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
 	const MPESA_PRIVATE_AIRTIME_OTHER = 29;
 	const MPESA_PRIVATE_UNKNOWN = 30;
 	const MPESA_PRIVATE_B2C_RECEIVED = 31;
-	const MPESA_PRIVATE_ERROR = 32;
+	const MPESA_PRIVATE_BALANCE_REQUEST = 32;
+	const MPESA_PRIVATE_ERROR = 33;
 
 }
 
