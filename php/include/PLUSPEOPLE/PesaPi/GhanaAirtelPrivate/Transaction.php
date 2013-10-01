@@ -31,6 +31,11 @@
 namespace PLUSPEOPLE\PesaPi\GhanaAirtelPrivate;
 
 class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
+	const GH_AIRTEL_PAYMENT_RECEIVED = 400;
+	const GH_AIRTEL_PAYMENT_SENT = 401;
+	const GH_AIRTEL_AIRTIME = 402;
+	const GH_AIRTEL_PURCHASE = 403;
+	const GH_AIRTEL_UNKNOWN = 410;
 	
 }
 

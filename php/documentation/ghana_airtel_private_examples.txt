@@ -1,0 +1,17 @@
+This file contains various example messages of SMS notifcations used on an Airtel private account in Ghana.
+All messages are sent from: AIRTELMONEY
+
+-----------------------------------
+Notification for when you transfer money to another individual.
+
+$example = 'Trans. ID: 313821006060
+You have sent 20GHS to 233261234567.  Your available balance is 250.67GHS.';
+
+-----------------------------------
+Notification for when you pay to a merchant/utility account
+
+$example = 'TransID: 3131001000477
+Transaction successful, you have paid 50.00GHS to reference code 0261234567';
+
+
+
