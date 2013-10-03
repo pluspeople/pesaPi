@@ -68,3 +68,10 @@ Notification when you do a balance request
 $example = 'DQ91IB986 Confirmed.
 Your M-PESA balance was Ksh339.00
 on 2/7/13 at 6:46 PM.Safaricom only calls you from 0722000000';
+
+-----------------------------------
+Notification when you pay to a paybill number
+
+DY28XV679 Confirmed. Ksh4,000.00 sent to KCB Paybill AC for account 1137238445 on 9/9/13 at 11:31 PM
+New M-PESA balance is Ksh22.00.
+
