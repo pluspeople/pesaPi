@@ -51,12 +51,14 @@ class PersonalParser {
 										"NOTE" => "",
 										"COST" => 0);
 
+
+
 		// REFACTOR: should be split into subclasses
 		if (strpos($input, "You have received") !== FALSE) {
 			$result["SUPER_TYPE"] = Transaction::MONEY_IN;
 
 			$temp = array();
-			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+You have received Ksh([0-9\.\,]+00) from[\s\n]+([A-Z ']+) ([0-9]+)[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+You have received Ksh([0-9\.\,]+00) from[\s\n]+([A-Z '\.]+) ([0-9]+)[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
 			if (isset($temp[1][0])) {
 				$result["TYPE"] = Transaction::MPESA_PRIVATE_PAYMENT_RECEIVED;
 				$result["RECEIPT"] = $temp[1][0];
@@ -67,7 +69,7 @@ class PersonalParser {
 				$result["BALANCE"] = Utility::numberInput($temp[7][0]);
 
 			} else {
-				preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+You have received Ksh([0-9\.\,]+00) from[\s\n]+([0-9]+) - ([A-Z ']+) [\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
+				preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+You have received Ksh([0-9\.\,]+00) from[\s\n]+([0-9]+) - ([A-Z '\.]+) [\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
 				if (isset($temp[1][0])) {
 					$result["TYPE"] = Transaction::MPESA_PRIVATE_B2C_RECEIVED;
 					$result["RECEIPT"] = $temp[1][0];
@@ -79,6 +81,20 @@ class PersonalParser {
 				}
 			}
 
+		} elseif (strpos($input, "received from") !== FALSE) {
+			$result["SUPER_TYPE"] = Transaction::MONEY_IN;
+			$result["TYPE"] = Transaction::MPESA_PRIVATE_BUYGOODS_RECEIVED;
+			
+			$temp = array();
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+Ksh([0-9\.\,]+00) received from[\s\n]+([0-9]+) ([A-Z '\.]+)[\s\n]+New Account balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
+			if (isset($temp[1][0])) {
+				$result["RECEIPT"] = $temp[1][0];
+				$result["AMOUNT"] = Utility::numberInput($temp[4][0]);
+				$result["NAME"] = trim($temp[6][0]);
+				$result["TIME"] = $this->dateInput($temp[2][0] . " " . $temp[3][0]);
+				$result["PHONE"] = $temp[5][0];
+				$result["BALANCE"] = Utility::numberInput($temp[7][0]);
+			}
 
 		} elseif (preg_match("/sent to .+ for account/", $input) > 0) {
 			$result["SUPER_TYPE"] = Transaction::MONEY_OUT;
@@ -114,7 +130,7 @@ class PersonalParser {
 			$result["TYPE"] = Transaction::MPESA_PRIVATE_PAYMENT_SENT;
 
 			$temp = array();
-			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+Ksh([0-9\.\,]+00) sent to ([A-Z ']+) ([0-9]+) on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+Ksh([0-9\.\,]+00) sent to ([A-Z '\.]+) ([0-9]+) on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
 			if (isset($temp[1][0])) {
 				$result["RECEIPT"] = $temp[1][0];
 				$result["AMOUNT"] = Utility::numberInput($temp[2][0]);

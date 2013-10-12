@@ -45,6 +45,7 @@ class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
 	const MPESA_PRIVATE_B2C_RECEIVED = 31;
 	const MPESA_PRIVATE_BALANCE_REQUEST = 32;
 	const MPESA_PRIVATE_ERROR = 33;
+	const MPESA_PRIVATE_BUYGOODS_RECEIVED = 34;
 
 }
 
