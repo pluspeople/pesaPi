@@ -34,14 +34,31 @@ class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
 	// Extended attributes
 	const MPESA_PAYBILL_PAYMENT_RECIEVED = 1;
 	const MPESA_PAYBILL_PAYMENT_CANCELLATION = 2;
+	const MPESA_PAYBILL_PAYMENT_REFUND = 7;
 	const MPESA_PAYBILL_FUNDS_TRANSFER = 3;
 	const MPESA_PAYBILL_FUNDS_CANCELLATION = 4;
 	const MPESA_PAYBILL_BUSINESS_CHARGES = 5;
 	const MPESA_PAYBILL_BUSINESS_CHARGES_CANCELLATION = 6;
 
+	public static function update($row, $source) {
+		$existing = null;
+
+		if ($existing == null) {
+			Transaction::import($row);
+		} else {
+			// Update transaction.
+			if ($source == MpesaPaybill::IPN) {
+				
+
+			} elseif ($source == MpesaPaybill::HTMLSCRUB) {
+
+
+			}
+
+		}
+	}
 
 	public static function import($row) {
-		// NOT DONE
 		$payment = Transaction::createNew($row['RECIEPT'], $row['TYPE']);
 		if (is_object($payment)) {
 			$payment->setSuperType($row['TRANSFERDIRECTION']); // not done

@@ -83,3 +83,15 @@ on 28/9/13 at 1:14 PM
 Ksh50.00 received from
 254729639024 MORRIS M.
 New Account balance is Ksh54.00';
+
+
+-----------------------------------
+Notification when you transfer to your M-Shwari account.
+
+$example = 'EB97SA431 Confirmed. Ksh50.00 transferred to M-Shwari account on 13/10/13 at 2:13 AM. M-PESA balance is Ksh4,265.00, new M-Shwari account balance is Ksh20,087.69.';
+
+
+-----------------------------------
+Notification when you transfer from your M-Shwari account.
+
+$example = 'EB87ST824 Confirmed. You have transferred Ksh50.00 from your M-Shwari account on 13/10/13 at 2:14 AM. M-Shwari balance is Ksh20,037.69. M-PESA balance is Ksh4,315.00.';

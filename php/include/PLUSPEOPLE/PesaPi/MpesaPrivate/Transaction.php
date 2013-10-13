@@ -46,6 +46,8 @@ class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
 	const MPESA_PRIVATE_BALANCE_REQUEST = 32;
 	const MPESA_PRIVATE_ERROR = 33;
 	const MPESA_PRIVATE_BUYGOODS_RECEIVED = 34;
+	const MPESA_PRIVATE_TO_MSHWARI = 35;
+	const MPESA_PRIVATE_FROM_MSHWARI = 36;
 
 }
 

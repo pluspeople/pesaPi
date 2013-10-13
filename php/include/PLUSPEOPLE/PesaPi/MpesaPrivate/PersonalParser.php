@@ -27,6 +27,7 @@
 		SUCH DAMAGE.
 
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
+		Contributions by Moris M <morrisauk@gmail.com>
  */
 namespace PLUSPEOPLE\PesaPi\MpesaPrivate;
 use \PLUSPEOPLE\PesaPi\Base\Utility;
@@ -209,6 +210,30 @@ class PersonalParser {
 				$result["TIME"] = $this->dateInput($temp[4][0] . " " . $temp[5][0]);
 				$result["BALANCE"] = Utility::numberInput($temp[6][0]);
 			}
+
+		} elseif (strpos($input, "from your M-Shwari account") !== FALSE) {
+			$result["SUPER_TYPE"] = Transaction::MONEY_IN;
+			$result["TYPE"] = Transaction::MPESA_PRIVATE_FROM_MSHWARI;
+
+			$temp = array();
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+You have transferred Ksh([0-9\.\,]+00)[\s\n]+from your M-Shwari account[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)\.[\s\n]+M-Shwari balance is Ksh[0-9\.\,]+\.[\s\n]+M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
+			$result["RECEIPT"] = $temp[1][0];
+			$result["AMOUNT"] = Utility::numberInput($temp[2][0]);
+			$result["NAME"] = "M-Shwari";
+			$result["TIME"] = $this->dateInput($temp[3][0] . " " . $temp[4][0]);
+			$result["BALANCE"] = Utility::numberInput($temp[5][0]);
+
+		} elseif (strpos($input, "transferred to M-Shwari account") !== FALSE) {
+			$result["SUPER_TYPE"] = Transaction::MONEY_OUT;
+			$result["TYPE"] = Transaction::MPESA_PRIVATE_TO_MSHWARI;
+
+			$temp = array();
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+Ksh([0-9\.\,]+00) transferred to M-Shwari account[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)\.[\s\n]+M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
+			$result["RECEIPT"] = $temp[1][0];
+			$result["AMOUNT"] = Utility::numberInput($temp[2][0]);
+			$result["NAME"] = "M-Shwari";
+			$result["TIME"] = $this->dateInput($temp[3][0] . " " . $temp[4][0]);
+			$result["BALANCE"] = Utility::numberInput($temp[5][0]);
 
 		} elseif (strpos($input, "Your M-PESA balance was") !== FALSE) {
 			$result["SUPER_TYPE"] = Transaction::MONEY_NEUTRAL;

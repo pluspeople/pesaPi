@@ -33,6 +33,8 @@ use PLUSPEOPLE\PesaPi\Base\Database;
 use PLUSPEOPLE\PesaPi\Base\TransactionFactory;
 
 class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account { 
+	const HTMLSCRUB = 1;
+	const IPN = 2;
 
 	public function availableBalance($time = null) {
 		$time = (int)$time;
@@ -175,7 +177,7 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 			$rows = $scrubber->scrubRows($page);
 			// save data to database
 			foreach ($rows AS $row) {
-				$payment = Transaction::import($row);
+				$payment = Transaction::update($row, MpesaPaybill::HTMLSCRUB);
 				if (is_object($payment)) {
 					$this->handleCallback($payment);
 				}
