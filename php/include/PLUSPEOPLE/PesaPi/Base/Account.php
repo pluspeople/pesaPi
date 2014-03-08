@@ -37,6 +37,7 @@ class Account {
 	const KENYA_YU_PRIVATE = 3;
 	const GHANA_AIRTEL_PRIVATE = 4;
 	const RWANDA_MTN_PRIVATE = 5;
+	const TANZANIA_MPESA_PRIVATE = 6;
 
   protected $id = 0;
   protected $type = 0;

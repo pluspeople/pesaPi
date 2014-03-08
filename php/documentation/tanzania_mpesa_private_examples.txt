@@ -1,0 +1,39 @@
+This file contains various example messages of SMS notifcations used on an Tanzanian MPESA Private account.
+-----------------------------------------------------------------
+
+Notification when a Person is sending you money.
+
+Z10DN636 Confirmed.
+You have received Tsh50,000 from
+FREDRICK KIMARO
+on 27/1/14 at 1:19 PM
+New M-PESA balance is Tsh214,676
+
+-----------------------------------------------------------------
+Notifications when you send another person money
+
+X89IQ877 Confirmed. Tsh2,100 sent to MUSHI WILLIAM on 15/12/13 at 10:19 PM. New M-PESA balance is Tsh23,232.
+
+
+-----------------------------------------------------------------
+Notifications when you buy Airtime for yourself
+
+Z92FP098 confirmed. You bought Tsh3,500 of airtime on 22/2/14 at 8:12 PM
+New M-PESA balance is Tsh2,720
+
+
+-----------------------------------------------------------------
+Notifications when you buy Airtime for someone else
+
+Y24KU015 confirmed. You bought Tsh501 of airtime for 0765567959 on 1/1/14 at 10:09 PM
+New M-PESA balance is Tsh1,430
+
+
+-----------------------------------------------------------------
+Notifications when you deposit money into bank - wondering if this is a paybill transaction (looks like it)
+
+Z15EE301 Confirmed.
+Tsh212,000 sent to business Bank for account
+ACB-11567341482 on 28/1/14 at 11:30 PM
+New M-PESA balance is Tsh225.
+

@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -105,6 +105,9 @@ identifier ";
     break;
     case Account::RWANDA_MTN_PRIVATE:
       $object = new \PLUSPEOPLE\PesaPi\RwandaMTNPrivate\Account($id, $initValues);
+    break;
+    case Account::TANZANIA_MPESA_PRIVATE:
+      $object = new \PLUSPEOPLE\PesaPi\TanzaniaMpesaPrivate\Account($id, $initValues);
     break;
     }
     return $object;

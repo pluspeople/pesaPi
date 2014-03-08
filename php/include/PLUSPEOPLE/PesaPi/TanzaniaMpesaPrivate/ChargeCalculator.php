@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -28,32 +28,68 @@
 
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi\Base;
+namespace PLUSPEOPLE\PesaPi\TanzaniaMpesaPrivate;
 
-class Utility {
-	public static function numberInput($input) {
-		$input = trim($input);
-		$amount = 0;
-
-		if (preg_match("/^[0-9,]+\.?$/", $input)) {
-			$amount = 100 * (int)str_replace(',', '', $input);
-		} elseif (preg_match("/^[0-9,]+\.[0-9]$/", $input)) {
-			$amount = 10 * (int)str_replace(array('.', ','), '', $input);
-		} elseif (preg_match("/^[0-9,]*\.[0-9][0-9]$/", $input)) {
-			$amount = (int)str_replace(array('.', ','), '', $input);
-		} else {
-			$amount = (int)$input;
-		}
-		return $amount;
-	}
-
-	public static function dateInput($input) {
-		$timeStamp = strtotime($input);
-		if ($timeStamp != FALSE) {
-			return $timeStamp;
-		}
+class ChargeCalculator {
+	
+	static public function calculateCost($type, $time, $amount) {
 		return 0;
 	}
-}
 
-?>
+	static protected function sendingCost($time, $amount) {
+		if ($amount <= 4900) {
+			return 300;
+		} elseif ($amount <= 10000) {
+			return 500;
+		} elseif ($amount <= 50000) {
+			return 2700;
+		} elseif ($amount <= 500000) {
+			return 3300;
+		} elseif ($amount <= 2000000) {
+			return 5500;
+		} elseif ($amount <= 4500000) {
+			return 8200;
+		} else {
+			return 11000;
+		}
+	}
+
+	static protected function withdrawCost($time, $amount) {
+		if ($amount <= 10000) {
+			return 1000;
+		} elseif ($amount <= 250000) {
+			return 2700;
+		} elseif ($amount <= 350000) {
+			return 4900;
+		} elseif ($amount <= 500000) {
+			return 6600;
+		} elseif ($amount <= 750000) {
+			return 8200;
+		} elseif ($amount <= 1000000) {
+			return 11000;
+		} elseif ($amount <= 1500000) {
+			return 15900;
+		} elseif ($amount <= 2000000) {
+			return 17600;
+		} elseif ($amount <= 3500000) {
+			return 18700;
+		} elseif ($amount <= 5000000) {
+			return 27500;
+		} else {
+			return 33000;
+		}
+	}
+
+	static protected function atmWithdrawCost($time, $amount) {
+		if ($amount <= 250000) {
+			return 3300;
+		} elseif ($amount <= 500000) {
+			return 6600;
+		} elseif ($amount <= 1000000) {
+			return 11000;
+		} else {
+			return 19300;
+		}
+	}
+
+}

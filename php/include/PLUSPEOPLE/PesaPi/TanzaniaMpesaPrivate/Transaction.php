@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -28,32 +28,17 @@
 
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi\Base;
+namespace PLUSPEOPLE\PesaPi\TanzaniaMpesaPrivate;
 
-class Utility {
-	public static function numberInput($input) {
-		$input = trim($input);
-		$amount = 0;
+class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
+	// Extended attributes
+	const TZ_MPESA_PRIVATE_PAYMENT_RECEIVED = 601;
+	const TZ_MPESA_PRIVATE_PAYMENT_SENT = 602;
+	const TZ_MPESA_PRIVATE_PAYBILL_PAID = 603;
+	const TZ_MPESA_PRIVATE_AIRTIME_YOU = 604;
+	const TZ_MPESA_PRIVATE_AIRTIME_OTHER = 605;
 
-		if (preg_match("/^[0-9,]+\.?$/", $input)) {
-			$amount = 100 * (int)str_replace(',', '', $input);
-		} elseif (preg_match("/^[0-9,]+\.[0-9]$/", $input)) {
-			$amount = 10 * (int)str_replace(array('.', ','), '', $input);
-		} elseif (preg_match("/^[0-9,]*\.[0-9][0-9]$/", $input)) {
-			$amount = (int)str_replace(array('.', ','), '', $input);
-		} else {
-			$amount = (int)$input;
-		}
-		return $amount;
-	}
-
-	public static function dateInput($input) {
-		$timeStamp = strtotime($input);
-		if ($timeStamp != FALSE) {
-			return $timeStamp;
-		}
-		return 0;
-	}
+	const TZ_MPESA_PRIVATE_UNKOWN = 699;
 }
 
 ?>
