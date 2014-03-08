@@ -38,7 +38,6 @@ class Parser {
 		return $dt->getTimestamp();
 	}
 
-
 	public function parse($input) {
 		$result = array("SUPER_TYPE" => 0,
 										"RECEIPT" => "",
@@ -85,6 +84,34 @@ class Parser {
 				$result["BALANCE"] = Utility::numberInput($temp[7][0]);
 			}
 
+		} elseif (preg_match("/Give Tsh[0-9\.\,]+ cash to/", $input) > 0) {
+			$result["SUPER_TYPE"] = Transaction::MONEY_IN;
+			$result["TYPE"] = Transaction::TZ_MPESA_PRIVATE_DEPOSIT;
+			
+			$temp = array();
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+Give Tsh([0-9\.\,]+) cash to (.+)[\s\n]+New M-PESA balance is Tsh([0-9\.\,]+)/mi", $input, $temp);
+			if (isset($temp[1][0])) {
+				$result["RECEIPT"] = $temp[1][0];
+				$result["AMOUNT"] = Utility::numberInput($temp[4][0]);
+				$result["NAME"] = $temp[5][0];
+				$result["TIME"] = $this->dateInput($temp[2][0] . " " . $temp[3][0]);
+				$result["BALANCE"] = Utility::numberInput($temp[6][0]);
+			}
+
+		} elseif (preg_match("/Withdraw Tsh[0-9\.\,]+ from/", $input) > 0) {
+			$result["SUPER_TYPE"] = Transaction::MONEY_OUT;
+			$result["TYPE"] = Transaction::TZ_MPESA_PRIVATE_WITHDRAW;
+
+			$temp = array();
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+Withdraw Tsh([0-9\.\,]+) from[\s\n]+(.+)[\s\n]+New M-PESA balance is Tsh([0-9\.\,]+)/mi", $input, $temp);
+			if (isset($temp[1][0])) {
+				$result["RECEIPT"] = $temp[1][0];
+				$result["AMOUNT"] = Utility::numberInput($temp[4][0]);
+				$result["NAME"] = $temp[5][0];
+				$result["TIME"] = $this->dateInput($temp[2][0] . " " . $temp[3][0]);
+				$result["BALANCE"] = Utility::numberInput($temp[6][0]);
+			}
+
 		} elseif (preg_match("/sent to .+ on/", $input) > 0) {
 			$result["SUPER_TYPE"] = Transaction::MONEY_OUT;
 			$result["TYPE"] = Transaction::TZ_MPESA_PRIVATE_PAYMENT_SENT;
@@ -126,6 +153,18 @@ class Parser {
 				$result["NAME"] = $temp[3][0];
 				$result["TIME"] = $this->dateInput($temp[4][0] . " " . $temp[5][0]);
 				$result["BALANCE"] = Utility::numberInput($temp[6][0]);
+			}
+
+		} elseif (strpos($input, "Your M-PESA balance was") !== FALSE) {
+			$result["SUPER_TYPE"] = Transaction::MONEY_NEUTRAL;
+			$result["TYPE"] = Transaction::TZ_MPESA_PRIVATE_BALANCE_REQUEST;
+
+			$temp = array();
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+Your M-PESA balance was Tsh([0-9\.\,]+)[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)/mi", $input, $temp);
+			if (isset($temp[1][0])) {
+				$result["RECEIPT"] = $temp[1][0];
+				$result["TIME"] = $this->dateInput($temp[3][0] . " " . $temp[4][0]);
+				$result["BALANCE"] = Utility::numberInput($temp[2][0]);
 			}
 
 		} else {

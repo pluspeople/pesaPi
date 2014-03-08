@@ -51,10 +51,21 @@ on 3/7/13 at 9:07 AM
 Give Ksh1,000.00 cash to Digital Africa Services Jolet Supermarket
 New M-PESA balance is Ksh1,338.00';
 
+
+-----------------------------------
+Notifications when withdrawing money from you account at an agent
+
+ET04TG335 Confirmed.
+on 20/2/14 at 2:44 PM
+Withdraw Ksh16,000.00 from
+129324 - Brothers Link Agency Vetngong Road
+New M-PESA balance is Ksh570.00.Save & get a loan on MShwari
+
 -----------------------------------
 Notifications when you send another person money
 
 $example = 'DZ12GX874 Confirmed. Ksh2,100.00 sent to BRIAN MBUGUA 0723447655 on 17/9/13 at 3:16 PM New M-PESA balance is Ksh106.00.PIN YAKO SIRI YAKO';
+
 
 -----------------------------------
 Notifications when you buy Airtime for yourself

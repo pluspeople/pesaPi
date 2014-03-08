@@ -33,62 +33,63 @@ namespace PLUSPEOPLE\PesaPi\TanzaniaMpesaPrivate;
 class ChargeCalculator {
 	
 	static public function calculateCost($type, $time, $amount) {
+		switch ($type) {
+		case Transaction::TZ_MPESA_PRIVATE_PAYMENT_SENT:
+			return ChargeCalculator::sendingCost($time, $amount);
+			break;
+		case Transaction::TZ_MPESA_PRIVATE_WITHDRAW:
+			return ChargeCalculator::withdrawCost($time, $amount);
+			break;
+		case Transaction::TZ_MPESA_PRIVATE_BALANCE_REQUEST:
+			return 6000;
+			break;
+		}
 		return 0;
 	}
 
 	static protected function sendingCost($time, $amount) {
-		if ($amount <= 4900) {
-			return 300;
-		} elseif ($amount <= 10000) {
-			return 500;
-		} elseif ($amount <= 50000) {
-			return 2700;
-		} elseif ($amount <= 500000) {
-			return 3300;
-		} elseif ($amount <= 2000000) {
-			return 5500;
-		} elseif ($amount <= 4500000) {
-			return 8200;
+		if ($amount <= 99900) {
+			return 1000;
+		} elseif ($amount <= 299900) {
+			return 3000;
+		} elseif ($amount <= 499900) {
+			return 6000;
+		} elseif ($amount <= 999900) {
+			return 10000;
+		} elseif ($amount <= 1999900) {
+			return 25000;
+		} elseif ($amount <= 4999900) {
+			return 30000;
+		} elseif ($amount <= 29999900) {
+			return 60000;
+		} elseif ($amount <= 49999900) {
+			return 120000;
 		} else {
-			return 11000;
+			return 180000;
 		}
 	}
 
 	static protected function withdrawCost($time, $amount) {
-		if ($amount <= 10000) {
-			return 1000;
-		} elseif ($amount <= 250000) {
-			return 2700;
-		} elseif ($amount <= 350000) {
-			return 4900;
-		} elseif ($amount <= 500000) {
-			return 6600;
-		} elseif ($amount <= 750000) {
-			return 8200;
-		} elseif ($amount <= 1000000) {
-			return 11000;
-		} elseif ($amount <= 1500000) {
-			return 15900;
-		} elseif ($amount <= 2000000) {
-			return 17600;
-		} elseif ($amount <= 3500000) {
-			return 18700;
-		} elseif ($amount <= 5000000) {
-			return 27500;
+		if ($amount <= 299900) {
+			return 50000;
+		} elseif ($amount <= 999900) {
+			return 60000;
+		} elseif ($amount <= 1999900) {
+			return 120000;
+		} elseif ($amount <= 4999900) {
+			return 150000;
+		} elseif ($amount <= 9999900) {
+			return 220000;
+		} elseif ($amount <= 19999900) {
+			return 260000;
+		} elseif ($amount <= 29999900) {
+			return 420000;
+		} elseif ($amount <= 39999900) {
+			return 550000;
+		} elseif ($amount <= 49999900) {
+			return 650000;
 		} else {
-			return 33000;
-		}
-	}
-
-	static protected function atmWithdrawCost($time, $amount) {
-		if ($amount <= 250000) {
-			return 3300;
-		} elseif ($amount <= 500000) {
-			return 6600;
-		} elseif ($amount <= 1000000) {
-			return 11000;
-		} else {
-			return 19300;
+			return 700000;
 		}
 	}
 

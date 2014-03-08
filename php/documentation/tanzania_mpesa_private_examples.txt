@@ -1,4 +1,5 @@
 This file contains various example messages of SMS notifcations used on an Tanzanian MPESA Private account.
+see also: https://www.vodacom.co.tz/mpesa/consumers/send_and_receive
 -----------------------------------------------------------------
 
 Notification when a Person is sending you money.
@@ -36,4 +37,29 @@ Z15EE301 Confirmed.
 Tsh212,000 sent to business Bank for account
 ACB-11567341482 on 28/1/14 at 11:30 PM
 New M-PESA balance is Tsh225.
+
+
+-----------------------------------------------------------------
+Notifications when you deposit money into your mpesa account
+
+BA35RS735 Confirmed.
+on 8/3/14 at 4:59 PM
+Give Tsh10,000 cash to Hilda Joseph Mushi
+New M-PESA balance is Tsh10,015
+
+
+-----------------------------------------------------------------
+Notifications when you withdraw money from your account at an agent
+
+BA35RT157 Confirmed.
+on 8/3/14 at 5:19 PM
+Withdraw Tsh6,000 from
+128137 - EMANUEL SHANI
+New M-PESA balance is Tsh3,415
+
+-----------------------------------------------------------------
+Notifications when do a balance check
+
+BB43UB521 Confirmed. Your M-PESA balance was Tsh2,354
+on 8/3/14 at 5:26 PM.
 

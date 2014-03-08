@@ -160,7 +160,7 @@ class PersonalParser {
 			$result["TYPE"] = Transaction::MPESA_PRIVATE_WITHDRAW;
 
 			$temp = array();
-			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+Withdraw Ksh([0-9\.\,]+) from (.+)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
+			preg_match_all("/([A-Z0-9]+) Confirmed\.[\s\n]+on (\d\d?\/\d\d?\/\d\d) at (\d\d?:\d\d [AP]M)[\s\n]+Withdraw Ksh([0-9\.\,]+) from[\s\n]+(.+)[\s\n]+New M-PESA balance is Ksh([0-9\.\,]+00)/mi", $input, $temp);
 			if (isset($temp[1][0])) {
 				$result["RECEIPT"] = $temp[1][0];
 				$result["AMOUNT"] = Utility::numberInput($temp[4][0]);
