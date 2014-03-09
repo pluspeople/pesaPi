@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -48,38 +48,38 @@ class HTMLPaymentScrubber1 {
 	} 
 
 	static public function scrubPayment(&$rawtext) {
-		$temp = array("VALID" => false,
-									"TYPE" => null,
-									"TRANSFERDIRECTION" => null,
-									"RECIEPT" => null,
-									"TIME" => null,
-									"PHONENUMBER" => null,
-									"NAME" => null,
-									"ACCOUNT" => null,
-									"STATUS" => null,
-									"AMOUNT" => null,
-									"POST_BALANCE" => null,
-									"NOTE" => null);
+		$result = array("SUPER_TYPE" => 0,
+										"TYPE" => 0,
+										"RECEIPT" => "",
+										"TIME" => 0,
+										"PHONE" => "",
+										"NAME" => "",
+										"ACCOUNT" => "",
+										"STATUS" => "",
+										"AMOUNT" => 0,
+										"BALANCE" => 0,
+										"NOTE" => "",
+										"COST" => 0);
 
 		/////////////////////////
 		// First identify those properties that are the same for all types
 		// Reciept
 		$matches = array();
 		if (preg_match('/<td\s*>\s*<a\s.+>(.+)<\/a\s*>\s*<\/td\s*>/iU', $rawtext, $matches) > 0) {
-			$temp['RECIEPT'] = trim($matches[1]);
+			$result['RECIEPT'] = trim($matches[1]);
 		}
 		
 		// Time
 		$matches = array();
 		if (preg_match('/<td.*>\s*(2[0-9]{3,3}-[01][0-9]-[0-3][0-9]\s[0-2][0-9]:[0-6][0-9]:[0-6][0-9])\s*<\/td\s*>/iU', $rawtext, $matches) > 0) {
-			$temp['TIME'] = Scrubber::dateInput($matches[1]);
+			$result['TIME'] = Scrubber::dateInput($matches[1]);
 		}
 
 		// Amount
 		$matches = array();
 		// Maches the row that has a number in it.
 		if (preg_match('/<td.*>\s*([0-9]+\.[0-9][0-9])\s*<\/td\s*>/iU', $rawtext, $matches) > 0) {
-			$temp['AMOUNT'] = Scrubber::numberInput($matches[1]);
+			$result['AMOUNT'] = Scrubber::numberInput($matches[1]);
 		}
 
 
@@ -87,37 +87,45 @@ class HTMLPaymentScrubber1 {
 		// Next figure out what type the entry is - and then perform specific identification 
 		if (preg_match('/<td.*>\s*Payment received from\s*/', $rawtext) > 0) {
 			// Payment recieved
-			$temp['TYPE'] = Transaction::MPESA_PAYBILL_PAYMENT_RECIEVED;
+			$result['SUPER_TYPE'] = Transaction::MONEY_IN;
+			$result['TYPE'] = Transaction::MPESA_PAYBILL_PAYMENT_RECIEVED;
 		} elseif (preg_match('/<td.*>\s*Cancelled:Payment received from\s*/', $rawtext) > 0) {
 			// Payment cancellation
-			$temp['TYPE'] = Transaction::MPESA_PAYBILL_PAYMENT_CANCELLATION;
+			$result['SUPER_TYPE'] = Transaction::MONEY_OUT;
+			$result['TYPE'] = Transaction::MPESA_PAYBILL_PAYMENT_CANCELLATION;
 		} elseif (preg_match('/<td.*>\s*Funds Transfer to\s*/', $rawtext) > 0) {
 			// Funds transfer
-			$temp['TYPE'] = Transaction::MPESA_PAYBILL_FUNDS_TRANSFER;
+			$result['SUPER_TYPE'] = Transaction::MONEY_OUT;
+			$result['TYPE'] = Transaction::MPESA_PAYBILL_FUNDS_TRANSFER;
 		} elseif (preg_match('/<td.*>\s*Cancelled:Funds Transfer to\s*/', $rawtext) > 0) {
 			// Funds cancellation
-			$temp['TYPE'] = Transaction::MPESA_PAYBILL_FUNDS_CANCELLATION;
+			$result['SUPER_TYPE'] = Transaction::MONEY_IN;
+			$result['TYPE'] = Transaction::MPESA_PAYBILL_FUNDS_CANCELLATION;
 		} elseif (preg_match('/<td.*>\s*Settle Business Charges from\s*/', $rawtext) > 0) {
 			// Business charges settlement
-			$temp['TYPE'] = Transaction::MPESA_PAYBILL_BUSINESS_CHARGES;
+			$result['SUPER_TYPE'] = Transaction::MONEY_OUT;
+			$result['TYPE'] = Transaction::MPESA_PAYBILL_BUSINESS_CHARGES;
 		} elseif (preg_match('/<td.*>\s*Cancelled:Settle Business Charges from\s*/', $rawtext) > 0) {
 			// Business charges settlement cancellation
-			$temp['TYPE'] = Transaction::MPESA_PAYBILL_BUSINESS_CHARGES_CANCELLATION;
+			$result['SUPER_TYPE'] = Transaction::MONEY_IN;
+			$result['TYPE'] = Transaction::MPESA_PAYBILL_BUSINESS_CHARGES_CANCELLATION;
 		} else {
 			// Unkown type - report it back to Mpesapi
 			// TODO: feedback mechanism
+			$result['SUPER_TYPE'] = Transaction::MONEY_NEUTRAL;
+			$result['TYPE'] = Transaction::MPESA_PAYBILL_UNKOWN;
 		}
 
 		// Transaction details
 		$matches = array();
 		if (preg_match('/<td.*>\s*Payment received from\s*([0-9]+)\s+-?\s*([^-]*)\s+Acc\.\s*(.*)\s*<\/td\s*>/iU', $rawtext, $matches) > 0) {
-			$temp['PHONENUMBER'] = trim($matches[1]);
-			$temp['NAME'] = trim($matches[2]);
-			$temp['ACCOUNT'] = trim($matches[3]);
+			$result['PHONE'] = trim($matches[1]);
+			$result['NAME'] = trim($matches[2]);
+			$result['ACCOUNT'] = trim($matches[3]);
 		}
 
 		// Status & note
-		switch($temp['TYPE']) {
+		switch($result['TYPE']) {
 		case Transaction::MPESA_PAYBILL_PAYMENT_RECIEVED:
 		case Transaction::MPESA_PAYBILL_PAYMENT_CANCELLATION:
 			/*
@@ -136,17 +144,37 @@ class HTMLPaymentScrubber1 {
 		default:
 			// Unkown status - report back to Mpesapi
 		}
-				$temp['STATUS'] = Payment::STATUS_COMPLETED;
 
 
-		// Post Balance
+		// Status & note
 		$matches = array();
-		if (preg_match('/<td.*>\s*<span.*Balance">(.+)<\/span\s*>\s*<\/td\s*>/iU', $rawtext, $matches) > 0) {
-			$temp['POST_BALANCE'] = Scrubber::numberInput($matches[1]);
+		if (preg_match('/<td>\s*<span id=".*Status">(.+)<\/span>/iU', $rawtext, $matches) > 0) {
+			if (trim($matches[1]) == "Completed") {
+				$result['STATUS'] = Transaction::STATUS_COMPLETED;
+			}
+
+		} elseif (preg_match('/<td>\s*<a onclick="ShowTransReason.+title="(.*)".+style="text-decoration:underline;">(.+)<\/a>/iU', $rawtext, $matches) > 0) {
+			$result['NOTE'] = trim($matches[1]);
+			$status = trim($matches[2]);
+			if ($status == "Declined") {
+				$result['SUPER_TYPE'] = Transaction::MONEY_NEUTRAL;
+				$result['STATUS'] = Transaction::STATUS_DECLINED;
+			} elseif ($status == "Cancelled") {
+				$result['SUPER_TYPE'] = Transaction::MONEY_NEUTRAL;
+				$result['STATUS'] = Transaction::STATUS_CANCELLED;
+			} elseif ($status == "Attempted") {
+				$result['SUPER_TYPE'] = Transaction::MONEY_NEUTRAL;
+				$result['STATUS'] = Transaction::STATUS_ATTEMPTED;
+			}
 		}
 
-								 
-		return $temp;
+		// Balance
+		$matches = array();
+		if (preg_match('/<td.*>\s*<span.*Balance">(.+)<\/span\s*>\s*<\/td\s*>/iU', $rawtext, $matches) > 0) {
+			$result['BALANCE'] = Scrubber::numberInput($matches[1]);
+		}
+
+		return $result;
 	}
 
 }

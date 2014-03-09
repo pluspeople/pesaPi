@@ -31,7 +31,7 @@
 namespace PLUSPEOPLE\PesaPi\Base;
 
 class Transaction {
-  ############### Properties ####################
+  //############### Properties ####################
 	const MONEY_IN = 1;
 	const MONEY_OUT = 2;
 	const MONEY_NEUTRAL = 3;

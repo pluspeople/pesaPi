@@ -212,7 +212,6 @@ class PesaPi {
 
 	/* This method performs a syncronisation between the safaricom database
 		 and the local database. 
-		 Warning: Although possible, you should never ever have to call this method directly
 	*/
 	public function forceSyncronisation() {
 		// first locate accounts.

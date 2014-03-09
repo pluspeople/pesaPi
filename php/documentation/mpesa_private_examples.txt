@@ -106,3 +106,9 @@ $example = 'EB97SA431 Confirmed. Ksh50.00 transferred to M-Shwari account on 13/
 Notification when you transfer from your M-Shwari account.
 
 $example = 'EB87ST824 Confirmed. You have transferred Ksh50.00 from your M-Shwari account on 13/10/13 at 2:14 AM. M-Shwari balance is Ksh20,037.69. M-PESA balance is Ksh4,315.00.';
+
+
+-----------------------------------
+Notification when you receive a refund for a transaction you had paid to a "lipa na mpesa" account.
+
+EE56TY519 confirmed. Your Pay Shop transaction EE56TT315 of 10Ksh has been refunded by 971577 - JUKKA ENTERPRISES. Please contact 971577 - JUKKA ENTERPRISES for more information.  Your account balance is now 47Ksh.

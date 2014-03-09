@@ -33,9 +33,6 @@ use PLUSPEOPLE\PesaPi\Base\Database;
 use PLUSPEOPLE\PesaPi\Base\TransactionFactory;
 
 class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account { 
-	const HTMLSCRUB = 1;
-	const IPN = 2;
-
 	public function availableBalance($time = null) {
 		$time = (int)$time;
 		$lastSyncSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::FactoryByName("LastSync");
@@ -53,9 +50,9 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 		return $amount;
 	}
 
-	public function locateByReceipt($receipt) {
+	public function locateByReceipt($receipt, $autoSync = true) {
 		$payment = TransactionFactory::factoryByReceipt($this, $receipt);
-		if ($payment == null) {
+		if ($payment == null AND $autoSync) {
 			$this->forceSyncronisation();
 			$payment = TransactionFactory::factoryByReceipt($this, $receipt);
 		}
@@ -151,33 +148,28 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 
 
 	public function forceSyncronisation() {
-		return true;
-
 		// determine the start time
 		$lastSyncSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::FactoryByName("LastSync");
 		$lastSync = $lastSyncSetting->getValue();
 		$config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
 		$initSyncDate = strtotime($config->getConfig('MpesaInitialSyncDate'));
 
+		$startSyncTime = $lastSync;
 		if ($lastSync <= $initSyncDate) {
 			$startSyncTime = $initSyncDate;
-		} else {
-			$startSyncTime = $lastSync;
 		}
-		$startSyncTime -= 1;
 		$now = time();
 
 		// perform file fetch
-		$loader = new MpesaPaybill\Loader();
+		$loader = new Loader();
 		$pages = $loader->retrieveData($startSyncTime);
-
 		// perform analysis/scrubbing
-		$scrubber = new MpesaPaybill\Scrubber();
+		$scrubber = new Scrubber();
 		foreach ($pages AS $page) {
 			$rows = $scrubber->scrubRows($page);
 			// save data to database
 			foreach ($rows AS $row) {
-				$payment = Transaction::update($row, MpesaPaybill::HTMLSCRUB);
+				$payment = Transaction::updateData($row, $this);
 				if (is_object($payment)) {
 					$this->handleCallback($payment);
 				}
@@ -185,8 +177,8 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 		}
 
 		// save last entry time as last sync
-		$this->lastSyncSetting->setValueDate($now);
-		$this->lastSyncSetting->update();
+		$lastSyncSetting->setValueDate($now);
+		$lastSyncSetting->update();
 	}
 
 
@@ -194,6 +186,30 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 		return new Transaction($id, $initValues);
 	}
 
+	public function importIPN($get) {
+		$temp = array("SUPER_TYPE" => Transaction::MONEY_IN,
+									"TYPE" => Transaction::MPESA_PAYBILL_PAYMENT_RECIEVED,
+									"RECEIPT" => $get['mpesa_code'],
+									"TIME" => Scrubber::dateInput($get['tstamp']),
+									"PHONE" => '0' . substr($get['mpesa_msisdn'], -9),
+									"NAME" => $get['mpesa_sender'],
+									"ACCOUNT" => $get['mpesa_acc'],
+									"STATUS" => Transaction::STATUS_COMPLETED,
+									"AMOUNT" => Scrubber::numberInput($get['mpesa_amt']),
+									"BALANCE" => 0,
+									"NOTE" => $get['text'],
+									"COST" => 0);
+
+		if ($temp['AMOUNT'] > 0 AND $temp['RECEIPT'] != "") {
+			$transaction = Transaction::updateData($temp, $this);
+
+			// Callback if needed
+			$this->handleCallback($transaction);
+
+			return $transaction;
+		}
+		return null;
+	}
 
 }
 

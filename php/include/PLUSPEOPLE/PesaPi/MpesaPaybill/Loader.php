@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi\PayBill;
+namespace PLUSPEOPLE\PesaPi\MpesaPayBill;
 
 class Loader {
 	protected $baseUrl = "https://ke.m-pesa.com";
@@ -48,10 +48,10 @@ class Loader {
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($this->curl, CURLOPT_COOKIESESSION, true);
 		curl_setopt($this->curl, CURLOPT_COOKIEJAR, $this->cookieFile);
-		curl_setopt($this->curl, CURLOPT_HEADER, false);
+		curl_setopt($this->curl, CURLOPT_HEADER, true);
 		curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
 
-		if (!$this->config->getConfig("SimulationMode")) {
+		if (TRUE OR !$this->config->getConfig("SimulationMode")) {
 			curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0);
 			curl_setopt($this->curl, CURLOPT_SSLCERT, $this->config->getConfig("MpesaCertificatePath"));
 			curl_setopt($this->curl, CURLOPT_SSLCERTTYPE, "PEM");
@@ -84,11 +84,14 @@ class Loader {
   ////////////////////////////////////////////////////////////////
 	private function loadSearchPage() {
 		$postData = 
-			'__VIEWSTATE=' . 
-			'&LoginCtrl$UserName=' . urlencode($this->config->getConfig("MpesaLoginName")) . 
-			'&LoginCtrl$Password=' . urlencode($this->getPassword()) .
-			'&LoginCtrl$txtOrganisationName=' . urlencode($this->config->getConfig("MpesaCorporation")) . 
-			'&LoginCtrl$LoginButton=' . urlencode('Log In'); 
+			'__LASTFOCUS=' .
+			'&__EVENTTARGET=' .
+			'&__EVENTARGUMENT=' .
+			'&__VIEWSTATE=' . 
+			'&LoginCtrl%24UserName=' . urlencode($this->config->getConfig("MpesaLoginName")) . 
+			'&LoginCtrl%24Password=' . urlencode($this->getPassword()) .
+			'&LoginCtrl%24txtOrganisationName=' . urlencode($this->config->getConfig("MpesaCorporation")) . 
+			'&LoginCtrl%24LoginButton=Log+In';
 
 		curl_setopt($this->curl, CURLOPT_URL, $this->baseUrl . "/ke/default.aspx?ReturnUrl=%2fke%2fMain%2fhome2.aspx%3fMenuID%3d1826&MenuID=1826");
 		curl_setopt($this->curl, CURLOPT_POST, true);
@@ -96,6 +99,7 @@ class Loader {
 		curl_setopt($this->curl, CURLOPT_COOKIEFILE, $this->cookieFile); 
 
 		$searchPage = curl_exec($this->curl);
+		// 		file_put_contents("STEP0_FORM.txt", $searchPage);
 		// TODO: missing error detection
 		return $searchPage;
 	}
@@ -140,6 +144,7 @@ class Loader {
 
 			// TODO: needs to retrieve the following pages, in case there is more than 500 entries
 			$result = curl_exec($this->curl);
+  		file_put_contents("STEP1_STATEMENT.txt", $result);
 			// TODO: missing error detection
 			$pages[] = $result;
 		}
@@ -184,7 +189,7 @@ class Loader {
 
 		// generate new pw - NOT very secure!
 		$temp = array();
-		preg_match_all("/(.*)(\d+)$/", $oldPassword, $temp);
+		preg_match_all("/(.*)(\d+)$/U", $oldPassword, $temp);
 		if (isset($temp[1][0]) AND isset($temp[2][0])) {
 			$newPassword = $temp[1][0] . (string)($temp[2][0] + 1);
 		} else {

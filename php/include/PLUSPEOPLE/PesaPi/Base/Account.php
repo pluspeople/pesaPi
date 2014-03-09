@@ -145,7 +145,7 @@ class Account {
 	}
 
 	protected function performCallback($transaction, $url, $secret) {
-		// TODO: Needs to be able to automatically resent in case "OK" is not received
+		// TODO: Needs to be able to automatically re-sent in case "OK" is not received
 		if ($url != "") {
 			$postData = 
 				'type=' . $transaction->getType() .

@@ -39,43 +39,71 @@ class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
 	const MPESA_PAYBILL_FUNDS_CANCELLATION = 4;
 	const MPESA_PAYBILL_BUSINESS_CHARGES = 5;
 	const MPESA_PAYBILL_BUSINESS_CHARGES_CANCELLATION = 6;
+	const MPESA_PAYBILL_UNKOWN = 199;
 
-	public static function update($row, $source) {
-		$existing = null;
+	public static function updateData($row, $account) {
+		$existing = $account->locateByReceipt($row['RECEIPT'], false);
 
-		if ($existing == null) {
-			Transaction::import($row);
-		} else {
-			// Update transaction.
-			if ($source == MpesaPaybill::IPN) {
-				
-
-			} elseif ($source == MpesaPaybill::HTMLSCRUB) {
-
-
+		if (count($existing) > 0 AND is_object($existing[0])) {
+			if ($existing[0]->getSuperType() != $row['SUPER_TYPE']) {
+				// NOT DONE - MAJOR ISSUE - ALERT OPERATOR..
+			}
+			if ($existing[0]->getType() != $row['TYPE']) {
+				// NOT DONE - MAJOR ISSUE - ALERT OPERATOR..
 			}
 
+			// Merge the information assuming we can piece together a full picture by two half successfull notifications			
+			if ($existing[0]->getTime() == 0 AND $row['TIME'] > 0) {
+				$existing[0]->setTime($row["TIME"]);
+			}
+			if (trim($existing[0]->getPhonenumber()) == "" AND !empty($row['PHONE'])) {
+				$existing[0]->setPhonenumber($row['PHONE']);
+			}
+			if (trim($existing[0]->getName()) == "" AND !empty($row['NAME'])) {
+				$existing[0]->setName($row['NAME']);
+			}
+			if (trim($existing[0]->getAccount()) == "" AND !empty($row['ACCOUNT'])) {
+				$existing[0]->setAccount($row['ACCOUNT']);
+			}
+			if ($row['STATUS'] == "" AND $existing[0]->getStatus() != $row['STATUS']) {
+				$existing[0]->setStatus($row['STATUS']);
+			}
+			if ($existing[0]->getAmount() < $row['AMOUNT']) {
+				$existing[0]->setAmount($row['AMOUNT']);
+			}
+			if ($existing[0]->getPostBalance() < $row['BALANCE']) {
+				$existing[0]->setPostBalance($row['BALANCE']);
+			}
+			if (trim($existing[0]->getNote()) == "" AND !empty($row['NOTE'])) {
+				$existing[0]->setNote($row['NOTE']);
+			}
+			
+			$existing[0]->update();
+			return $existing[0];
+
+		} else {
+			return Transaction::import($account, $row);
 		}
 	}
 
-	public static function import($row) {
-		$payment = Transaction::createNew($row['RECIEPT'], $row['TYPE']);
+	public static function import($account, $row) {
+		$payment = Transaction::createNew($account->getId(), $row['SUPER_TYPE'], $row['TYPE']);
 		if (is_object($payment)) {
-			$payment->setSuperType($row['TRANSFERDIRECTION']); // not done
+			$payment->setReceipt($row['RECEIPT']);
 			$payment->setTime($row["TIME"]);
-			$payment->setPhonenumber($row['PHONENUMBER']);
+			$payment->setPhonenumber($row['PHONE']);
 			$payment->setName($row['NAME']);
 			$payment->setAccount($row['ACCOUNT']);
 			$payment->setStatus($row['STATUS']);
 			$payment->setAmount($row['AMOUNT']);
-			$payment->setPostBalance($row['POST_BALANCE']);
+			$payment->setPostBalance($row['BALANCE']);
 			$payment->setNote($row['NOTE']);
 
 			$payment->update();
+			return $payment;
 		}
+		return null;
 	}
-
-
 }
 
 ?>
