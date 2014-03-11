@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `pesapi_payment` (
   `account_id` int(11) NOT NULL,
   `super_type` int(11) NOT NULL,
   `type` int(11) NOT NULL,
-  `receipt` varchar(10) COLLATE latin1_danish_ci NOT NULL,
+  `receipt` varchar(255) COLLATE latin1_danish_ci NOT NULL,
   `time` datetime NOT NULL,
   `phonenumber` varchar(45) COLLATE latin1_danish_ci NOT NULL,
   `name` varchar(255) COLLATE latin1_danish_ci NOT NULL,

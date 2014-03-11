@@ -1,0 +1,77 @@
+This file contains various example messages of SMS notifcations used on an Tanzanian TIGO Private account.
+
+-----------------------------------------------------------------
+Notification when a Person is sending you money.
+
+New balance is Tsh 138,522.
+You have received Tsh 50,000
+from CHARLES KOMBA,
+0727666074. 31/01/2014 05:36 PM; with TxnId:
+PP141141.1843.D06413.
+Transact with...
+
+-----------------------------------------------------------------
+Notifications when you send another person money
+
+New balance is Tsh 2,515.
+Money sent successfully to
+ANJELA KIRIA, 0745239044.
+Amount: Tsh 31,000. Fee: Tsh 350.TxnID:
+PP134304.0912.J02744. You can now send...
+
+-----------------------------------------------------------------
+Notifications when you buy Airtime for yourself
+
+New balance is Tsh 2,266. Your
+recharge request is successful
+for amount Tsh 3,501. TxnId :
+RC140320.1332.D09804.
+Transact with Tigo Pesa and win from Tshs...
+
+
+-----------------------------------------------------------------
+Notifications when you pay a bill (paybill?)
+
+Bill Transaction has been sent
+to Tanesco.Please wait for
+confirmation TxnId:
+BP150143.1343.E03178, Bill
+Number:01343392423,
+transaction amount : 20,000
+Tsh,new balance :71,073 Tsh,
+Company Tanesco.
+
+
+-----------------------------------------------------------------
+Notifications when you deposit money into bank
+
+Bank payment successfull. The details are : TxnId:
+BP150121.1337.C09085, Ref
+Number:10411342553,
+transaction amount : 111,000
+Tsh , charges: 0 Tsh,new
+balance :2,323 Tsh, Bank Name :
+ACB
+
+-----------------------------------------------------------------
+Notifications when you deposit money into your Tigo account
+
+New balance is Tsh 35,165.
+Cash-In of Tsh 35,000
+successful. Agent HILDA MUSHI.
+TxnID:
+CI154303.0933.G03265. You can now send money from your CRDB account to...
+
+
+-----------------------------------------------------------------
+Notifications when you withdraw money from your Tigo account at an agent
+
+New balance is Tsh 6,022. Cash-Out to EMANUEL KIULA was successful. Amount Tsh
+130,000. Charges Tsh 2500.TxnID
+CO150121.3223.G00889.
+Transact with Tigo Pesa...
+
+-----------------------------------------------------------------
+Notifications when do a balance check
+
+

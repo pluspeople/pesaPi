@@ -41,6 +41,7 @@ class PersonalParser {
 
 	public function parse($input) {
 		$result = array("SUPER_TYPE" => 0,
+										"TYPE" => 0,
 										"RECEIPT" => "",
 										"TIME" => 0,
 										"PHONE" => "",

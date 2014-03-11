@@ -109,6 +109,9 @@ identifier ";
     case Account::TANZANIA_MPESA_PRIVATE:
       $object = new \PLUSPEOPLE\PesaPi\TanzaniaMpesaPrivate\Account($id, $initValues);
     break;
+    case Account::TANZANIA_TIGO_PRIVATE:
+      $object = new \PLUSPEOPLE\PesaPi\TanzaniaTigoPrivate\Account($id, $initValues);
+    break;
     }
     return $object;
   }

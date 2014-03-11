@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@ class Account {
 	const GHANA_AIRTEL_PRIVATE = 4;
 	const RWANDA_MTN_PRIVATE = 5;
 	const TANZANIA_MPESA_PRIVATE = 6;
+	const TANZANIA_TIGO_PRIVATE = 7;
 
   protected $id = 0;
   protected $type = 0;

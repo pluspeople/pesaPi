@@ -8,6 +8,7 @@ The system currently support:
 * Ghana: Airtel private accounts (experimental)
 * Rwanda: MNT private accounts (experimental)
 * Tanzania: Mpesa private accounts
+* Tanzania: Tigo private accounts
 
 The API supports both PUSH and PULL versions.
 The PHP version of the API is generally the most mature and recomended at this point - the system is build using Mysql and Curl.
