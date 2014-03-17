@@ -44,17 +44,25 @@ class Account {
   protected $type = 0;
   protected $name = "";
   protected $identifier = "";
+	protected $pushIn = false;
+	protected $pushOut = false;
+	protected $pushNeutral = false;
+	protected $settings = array();
 
   protected $idUpdated = false;
   protected $typeUpdated = false;
   protected $nameUpdated = false;
   protected $identifierUpdated = false;
+	protected $pushInUpdated = false;
+	protected $pushOutUpdated = false;
+	protected $pushNeutralUpdated = false;
+	protected $settingsUpdated = false;
 
   protected $isDataRetrived = false;
 
 	protected $config = null;
 
-  # # # # # # # # Initializer # # # # # # # # # #
+  //# # # # # # # # Initializer # # # # # # # # # #
   public function __construct($id, $initValues=NULL) {
     $this->id = (int)$id;
 		$this->config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
@@ -63,7 +71,7 @@ class Account {
       $this->assignValues($initValues);
     }
   }
-  # # # # # # # # get/set methods # # # # # # # #
+  //# # # # # # # # get/set methods # # # # # # # #
   public function getId() {
     return $this->id;
   }
@@ -94,8 +102,82 @@ class Account {
     return $this->identifierUpdated = true;
   }
 
+  public function getPushIn() {
+    $this->retriveData();
+    return $this->pushIn;
+  }
+  public function setPushIn($input) {
+    $this->pushIn = (bool)$input;
+    return $this->pushInUpdated = true;
+  }
 
-  # # # # # # # # misc methods # # # # # # # #
+  public function getPushOut() {
+    $this->retriveData();
+    return $this->pushOut;
+  }
+  public function setPushOut($input) {
+    $this->pushOut = (bool)$input;
+    return $this->pushOutUpdated = true;
+  }
+
+  public function getPushNeutral() {
+    $this->retriveData();
+    return $this->pushNeutral;
+  }
+  public function setPushNeutral($input) {
+    $this->pushNeutral = (bool)$input;
+    return $this->pushNeutralUpdated = true;
+  }
+
+  public function getSettings() {
+    $this->retriveData();
+    return $this->settings;
+  }
+  public function setSettings($input) {
+    $this->settings = $input;
+    return $this->settingsUpdated = true;
+  }
+
+  //# # # # # # # # misc methods # # # # # # # #
+	static public function createNew($type, $identifier) {
+		$type = (int)$type;
+		
+		if ($type > 0 AND $identifier != "") {
+      $db = Database::instantiate(Database::TYPE_WRITE);
+
+			$newSettings = array("PUSH_IN_URL" => "",
+													 "PUSH_IN_SECRET" => "",
+													 "PUSH_OUT_URL" => "",
+													 "PUSH_OUT_SECRET" => "",
+													 "PUSH_NEUTRAL_URL" => "",
+													 "PUSH_NEUTRAL_SECRET" => "",
+													 "SYNC_SECRET" => Utility::generatePassword(8));
+			$settings = serialize($newSettings);
+
+			$query = "INSERT INTO   pesapi_account(
+                              type,
+                              name,
+                              identifier,
+                              push_in,
+                              push_out,
+                              push_neutral,
+                              settings)
+                VALUES(
+                              '$type',
+                              '',
+                              '" . $db->dbIn($identifier) . "',
+                              0,
+                              0,
+                              0,
+                              '" . $db->dbIn($settings) . "')";
+
+			if ($db->query($query)) {
+				return AccountFactory::createEntry($type, $db->insertId());
+			}
+		}
+		return null;
+	}
+
   public function delete() {
     if ($this->getId() > 0) {
 			$db = Database::instantiate(Database::TYPE_WRITE);
@@ -128,17 +210,33 @@ class Account {
 	protected function handleCallback($transaction) {
 		switch ($transaction->getSuperType()) {
 		case Transaction::MONEY_IN:
-			if ($this->config->getConfig("MoneyInCallback")) {
-				$url = trim($this->config->getConfig("MoneyInUrl"));
-				$secret = $this->config->getConfig("MoneyInSecret");
-				return $this->performCallback($transaction, $url, $secret);
+			if ($this->getPushIn()) {
+				$settings = $this->getSettings();
+				$url = trim($settings["PUSH_IN_URL"]);
+				$secret = $settings["PUSH_IN_SECRET"];
+				if ($url != "") {
+					return $this->performCallback($transaction, $url, $secret);
+				}
 			}
 			break;
 		case Transaction::MONEY_OUT:
-			if ($this->config->getConfig("MoneyOutCallback")) {
-				$url = trim($this->config->getConfig("MoneyOutUrl"));
-				$secret = $this->config->getConfig("MoneyOutSecret");
-				return $this->performCallback($transaction, $url, $secret);
+			if ($this->getPushOut()) {
+				$settings = $this->getSettings();
+				$url = trim($settings["PUSH_OUT_URL"]);
+				$secret = $settings["PUSH_OUT_SECRET"];
+				if ($url != "") {
+					return $this->performCallback($transaction, $url, $secret);
+				}
+			}
+			break;
+		case Transaction::MONEY_NEUTRAL:
+			if ($this->getPushNeutral()) {
+				$settings = $this->getSettings();
+				$url = trim($settings["PUSH_NEUTRAL_URL"]);
+				$secret = $settings["PUSH_NEUTRAL_SECRET"];
+				if ($url != "") {
+					return $this->performCallback($transaction, $url, $secret);
+				}
 			}
 			break;
 		}
@@ -158,8 +256,8 @@ class Account {
 				'&amount=' . $transaction->getAmount() . 
 				'&postbalance=' . $transaction->getPostBalance() .
 				'&transactioncost=' . $transaction->getTransactionCost() .
-				'&note=' . urlencode($transaction->getNote());
-			$postData .= $secret;
+				'&note=' . urlencode($transaction->getNote()) .
+        '&secret=' . urlencode($secret);
 			
 			$curl = curl_init($url);
 			curl_setopt($curl, CURLOPT_URL, $url);
@@ -188,7 +286,11 @@ class Account {
 		
       $query="SELECT  type, 
                      name, 
-                     identifier 
+                     identifier,
+                     push_in,
+                     push_out,
+                     push_neutral,
+                     settings
                FROM  pesapi_account 
                WHERE id='" . $this->getId() . "';";
 
@@ -208,7 +310,10 @@ class Account {
       $this->type = $foo->type;
       $this->name = $db->dbOut($foo->name);
       $this->identifier = $db->dbOut($foo->identifier);
-
+      $this->pushIn = $db->dbOut($foo->push_in);
+      $this->pushOut = $db->dbOut($foo->push_out);
+      $this->pushNeutral = $db->dbOut($foo->push_neutral);
+      $this->settings = unserialize($db->dbOut($foo->settings));
       $this->isDataRetrived = true;
     }
   }
@@ -230,6 +335,26 @@ class Account {
     if ($this->identifierUpdated) {
       $query.=" ,identifier='" . $db->dbIn($this->identifier) . "' ";
       $this->identifierUpdated=false;
+    }
+
+    if ($this->pushInUpdated) {
+			$query.=" ,push_in=" . ($this->pushIn ? 1 : 0);
+      $this->pushInUpdated=false;
+    }
+
+    if ($this->pushOutUpdated) {
+			$query.=" ,push_out=" . ($this->pushOut ? 1 : 0);
+      $this->pushOutUpdated=false;
+    }
+
+    if ($this->pushNeutralUpdated) {
+			$query.=" ,push_neutral=" . ($this->pushNeutral ? 1 : 0);
+      $this->pushNeutralUpdated=false;
+    }
+
+    if ($this->settingsUpdated) {
+			$query.=" ,settings='" . $db->dbIn(serialize($this->settings)) . "' ";
+      $this->settingsUpdated=false;
     }
 
     return $query;

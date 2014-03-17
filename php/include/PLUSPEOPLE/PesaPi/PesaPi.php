@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -37,14 +37,10 @@ use PLUSPEOPLE\PesaPi\MpesaPaybill\Transaction;
 	Features are collected here for simple interfacing by the user.
  */
 class PesaPi {
-	protected $initSyncDate = 0;
-	protected $lastSyncSetting = null;
 	protected $config = null;
 
 	public function __construct() {
 		$this->config = Configuration::instantiate();
-		$this->initSyncDate = strtotime($this->config->getConfig('MpesaInitialSyncDate'));
-		$this->lastSyncSetting = Base\SettingFactory::FactoryByName("LastSync");
 	}
 
 	/* This method returns the balance of the mpesa account at the specified point in time.

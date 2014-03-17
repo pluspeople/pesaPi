@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -50,20 +50,22 @@ if (!is_object($config)) {
 	exit();
 }
 
-if ($config->getConfig("MpesaPrivateSecret") == "" OR $config->getConfig("MpesaPrivateSecret") != $secret) {
-	print $payloadFailure;
-	exit();
-}
-
 $pesa = new PLUSPEOPLE\PesaPi\PesaPi();
 $identifier = $_GET["identifier"];
 $accounts = $pesa->getAccount($identifier);
 
-if (!is_object($accounts[0])) {
+if (!isset($accounts[0])) {
 	print $payloadFailure;
 	exit();
 }
 $account = $accounts[0]; 
+$settings = $account->getSettings();
+
+if ($settings["SYNC_SECRET"] == "" OR $settings["SYNC_SECRET"] != $secret) {
+	print $payloadFailure;
+	exit();
+}
+
 
 switch ($account->getType()) {
 case Account::TANZANIA_MPESA_PRIVATE:
@@ -73,10 +75,6 @@ case Account::MPESA_PRIVATE:
 		exit();
 	}
 	break;
-
-case Account::TANZANIA_MPESA_PRIVATE:
-
-break;
 }
 	
 

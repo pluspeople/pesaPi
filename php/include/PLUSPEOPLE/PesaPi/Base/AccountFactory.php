@@ -36,7 +36,11 @@ class AccountFactory {
 SELECT id,
 type,
 name,
-identifier ";
+identifier,
+push_in,
+push_out,
+push_neutral,
+settings ";
 
   //# # # # # # # # misc methods # # # # # # # #
   static public function factoryOne($id) {
@@ -89,7 +93,7 @@ identifier ";
   }
 
 
-  protected static function createEntry($type, $id, $initValues=NULL) {
+  public static function createEntry($type, $id, $initValues=NULL) {
     switch($type) {
     case Account::MPESA_PAYBILL:
       $object = new \PLUSPEOPLE\PesaPi\MpesaPaybill\MpesaPaybill($id, $initValues);

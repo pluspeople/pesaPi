@@ -35,8 +35,12 @@ class Loader {
 	protected $config = null;
 	protected $curl = null;
 	protected $cookieFile = null;
+	protected $account = null;
+	protected $settings = array();
 
-	public function __construct() {
+	public function __construct($account) {
+		$this->account = $account;
+		$this->settings = $account->getSettings();
 		$this->config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
 		if ($this->config->getConfig("SimulationMode")) {
 			$this->baseUrl = "http://www.pesapi.ke";
@@ -53,7 +57,7 @@ class Loader {
 
 		if (TRUE OR !$this->config->getConfig("SimulationMode")) {
 			curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0);
-			curl_setopt($this->curl, CURLOPT_SSLCERT, $this->config->getConfig("MpesaCertificatePath"));
+			curl_setopt($this->curl, CURLOPT_SSLCERT, $this->settings["CERTIFICATE"]);
 			curl_setopt($this->curl, CURLOPT_SSLCERTTYPE, "PEM");
 		}
 	}
@@ -88,9 +92,9 @@ class Loader {
 			'&__EVENTTARGET=' .
 			'&__EVENTARGUMENT=' .
 			'&__VIEWSTATE=' . 
-			'&LoginCtrl%24UserName=' . urlencode($this->config->getConfig("MpesaLoginName")) . 
-			'&LoginCtrl%24Password=' . urlencode($this->getPassword()) .
-			'&LoginCtrl%24txtOrganisationName=' . urlencode($this->config->getConfig("MpesaCorporation")) . 
+			'&LoginCtrl%24UserName=' . urlencode($this->settings["LOGIN"]) . 
+			'&LoginCtrl%24Password=' . urlencode($this->settings["PASSWORD"]) .
+			'&LoginCtrl%24txtOrganisationName=' . urlencode($this->settings["ORGANISATION"]) . 
 			'&LoginCtrl%24LoginButton=Log+In';
 
 		curl_setopt($this->curl, CURLOPT_URL, $this->baseUrl . "/ke/default.aspx?ReturnUrl=%2fke%2fMain%2fhome2.aspx%3fMenuID%3d1826&MenuID=1826");
@@ -215,22 +219,13 @@ class Loader {
 	}
 
 	private function getPassword() {
-		$pwSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::factoryByName("MpesaPassword");
-		if (is_object($pwSetting) AND $pwSetting->getValueString() != "") {
-			return $pwSetting->getValueString();
-		} else {
-			return $this->config->getConfig("MpesaPassword");
-		}
+		return $this->settings["PASSWORD"];
 	}
 
 	private function setPassword($input) {
-		$pwSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::factoryByName("MpesaPassword");
-		if ($input != "" AND is_object($pwSetting)) {
-			$pwSetting->setValueString($input);
-			$pwSetting->update();
-			return true;
-		}
-		return false;
+		$this->settings["PASSWORD"] = $input;
+		$this->account->setSettings($this->settings);
+		return $this->account->update();
 	}
 	
 }

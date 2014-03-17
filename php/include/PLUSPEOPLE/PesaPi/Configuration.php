@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ class Configuration {
 
 		// Enable this feature when you want to run the API against the simulator
 		// The simulator does not use SSL and is more easy to get up and running.
-		"SimulationMode"                => true,
+		"SimulationMode"                => false,
 
 		// Database settings follow - please note that they are repeated twice
 		"DatabaseHostRead"						=> "localhost",
@@ -54,46 +54,11 @@ class Configuration {
 		"DatabasePasswordWrite"				=> "DB-PASSWORD",
 		"DatabaseDatabaseWrite"				=> "DB-DATABASE",
 
- 		"Version"											=> "0.1.0",
-		/*************************************************************************
-                            Callback feature of PesaPi
-		 *************************************************************************/
-		// Callback setup
-		"MoneyInCallback"     => false,
-		"MoneyInUrl"          => "http://www.domain.co.ke/payment_received.php",
-		"MoneyInSecret"       => "&secret=somethingspecial",
-		"MoneyOutCallback"     => false,
-		"MoneyOutUrl"          => "http://www.domain.co.ke/payment_sent.php",
-		"MoneyOutSecret"       => "&secret=somethingspecial",
-
-
 		/*************************************************************************
                           Payment systems configuration
 		 *************************************************************************/
-		//////////////////////////////////
-		// MPESA PAYBILL ACCOUNTS
-		//////////////////////////////////
+		"AdminEmail"                  => "your@email.com"
 
-		// Paybill information
-		"MpesaCertificatePath"        => "/PATH/TO/CERTIFICATE.pem",
-		"MpesaLoginName"              => "**LOGIN**",
-		"MpesaPassword"               => "**PASSWORD**",
-		"MpesaCorporation"            => "**ORGANISATION**",
-    "MpesaInitialSyncDate"        => "2011-01-01",    
-		"CookieFolderPath"            => ".",
-		"AdminEmail"                  => "your@email.com",
-
-
-		//////////////////////////////////
-		// MPESA PRIVATE ACCOUNTS
-		//////////////////////////////////
-
-		// The identifier for the account matching the account identifier in the DB
-		// for the particular account that you want to use for Private Mpesa transactions
-		"MpesaPrivateIdentifier"      => "privatedefault",
-
-		// The secret you have configured SMSSync to provide when posting SMS's into the system.
-		"MpesaPrivateSecret"          => "abc",
 
 	);
 

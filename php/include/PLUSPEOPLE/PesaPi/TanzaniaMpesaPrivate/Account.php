@@ -33,6 +33,9 @@ use PLUSPEOPLE\PesaPi\Base\Database;
 use PLUSPEOPLE\PesaPi\Base\TransactionFactory;
 
 class Account extends \PLUSPEOPLE\PesaPi\Base\Account { 
+	public function getFormatedType() {
+		return "Tanzania - MPESA Private";
+	}
 
 	public function availableBalance($time = null) {
 		$time = (int)$time;

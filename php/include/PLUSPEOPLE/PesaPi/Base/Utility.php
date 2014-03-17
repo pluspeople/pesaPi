@@ -54,6 +54,19 @@ class Utility {
 		}
 		return 0;
 	}
+
+	public static function generatePassword($length = 10, $chars = "abcdefghijkmnopqrstuvwxyz023456789") {
+    srand((double)microtime()*1000000);
+
+    $pass = '' ;
+		for ($i = 0; $i < $length; $i++) {
+        $num = rand() % 33;
+        $tmp = substr($chars, $num, 1);
+        $pass = $pass . $tmp;
+    }
+
+    return $pass;		
+	}
 }
 
 ?>

@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,10 @@ use PLUSPEOPLE\PesaPi\Base\Database;
 use PLUSPEOPLE\PesaPi\Base\TransactionFactory;
 
 class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account { 
+	public function getFormatedType() {
+		return "Kenya - MPESA Paybill";
+	}
+
 	public function availableBalance($time = null) {
 		$time = (int)$time;
 		$lastSyncSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::FactoryByName("LastSync");
@@ -149,20 +153,16 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 
 	public function forceSyncronisation() {
 		// determine the start time
-		$lastSyncSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::FactoryByName("LastSync");
-		$lastSync = $lastSyncSetting->getValue();
-		$config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
-		$initSyncDate = strtotime($config->getConfig('MpesaInitialSyncDate'));
+		$settings = $this->getSettings();
+		$lastSync = $settings["LAST_SYNC"];
 
-		$startSyncTime = $lastSync;
-		if ($lastSync <= $initSyncDate) {
-			$startSyncTime = $initSyncDate;
-		}
+		// We keep the timestamp from just _BEFORE_ we start connecting - this way we ensure that incomming payment while 
+		// the process is in operation will be discovered at the NEXT request.
 		$now = time();
 
 		// perform file fetch
-		$loader = new Loader();
-		$pages = $loader->retrieveData($startSyncTime);
+		$loader = new Loader($this);
+		$pages = $loader->retrieveData($lastSync);
 		// perform analysis/scrubbing
 		$scrubber = new Scrubber();
 		foreach ($pages AS $page) {
@@ -177,8 +177,9 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 		}
 
 		// save last entry time as last sync
-		$lastSyncSetting->setValueDate($now);
-		$lastSyncSetting->update();
+		$settings["LAST_SYNC"] = $now;
+		$this->setSettings($settings);
+		$this->update();
 	}
 
 

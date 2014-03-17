@@ -34,6 +34,10 @@ use PLUSPEOPLE\PesaPi\Base\TransactionFactory;
 
 class Account extends \PLUSPEOPLE\PesaPi\Base\Account { 
 
+	public function getFormatedType() {
+		return "Kenya - Yu";
+	}
+
 	public function availableBalance($time = null) {
 		$time = (int)$time;
 		if (0 == $time) {

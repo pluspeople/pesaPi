@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,10 @@ use PLUSPEOPLE\PesaPi\Base\Database;
 use PLUSPEOPLE\PesaPi\Base\TransactionFactory;
 
 class Account extends \PLUSPEOPLE\PesaPi\Base\Account { 
+
+	public function getFormatedType() {
+		return "Ghana - Airtel money";
+	}
 
 	public function availableBalance($time = null) {
 		$time = (int)$time;
