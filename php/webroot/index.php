@@ -6,7 +6,7 @@ require_once("PLUSPEOPLE/autoload.php");
 
 class configtool extends \PLUSPEOPLE\SlowTemplate\Template {
 	public function getTemplateFile() {
-		return "index.tpl";
+		return substr($_SERVER['PHP_SELF'], 1, -3) . "tpl";
 	}
 
 	public function AJAXCreateDb() {

@@ -1,5 +1,5 @@
 <?php
-namespace Pluspeople\SlowTemplate;
+namespace PLUSPEOPLE\SlowTemplate;
 require_once("PLUSPEOPLE/autoload.php");
 
 /* Abstract class - used to provide baseline template functionality */
