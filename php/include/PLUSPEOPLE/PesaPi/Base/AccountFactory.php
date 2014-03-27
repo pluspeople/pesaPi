@@ -116,6 +116,9 @@ settings ";
     case Account::TANZANIA_TIGO_PRIVATE:
       $object = new \PLUSPEOPLE\PesaPi\TanzaniaTigoPrivate\Account($id, $initValues);
     break;
+		case Account::KENYA_AIRTEL_PRIVATE:
+			$object = new \PLUSPEOPLE\PesaPi\KenyaAirtelPrivate\Account($id, $initValues);
+		break;
     }
     return $object;
   }

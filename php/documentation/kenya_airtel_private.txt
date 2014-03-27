@@ -1,0 +1,47 @@
+-----------------------------------
+Notifications when you buy Airtime for yourself
+
+Trans. ID: 7740224211672. You have received Airtime of
+10.00Ksh from your OWN account.
+
+-----------------------------------
+Notification when a Person is sending you money.
+
+Trans. ID: 1440225031704 You have received 50.00Ksh from
+ANGELA NZIOKI. Your available
+balance is 155.00Ksh.
+
+-----------------------------------
+Notifications when you send another person money
+
+Trans. ID: 1450335211705 You
+have sent 50.00Ksh to JOSEPH KARANJA. Your available 
+balance is 10.00Ksh.
+
+-----------------------------------
+Notification when you pay to a paybill number
+
+Trans. ID: 2240545115618 You have sent 50.00Ksh to
+UHASIBU in reference to TEST.
+Your available balance is
+105.00Ksh.
+
+-----------------------------------
+Notifications when depositing cash money into your account
+
+Trans. ID: 0231412250320 You have received 200Ksh from
+ART111. Your available balance is 200.00Ksh.
+
+
+-----------------------------------
+Notification when you do a balance request
+
+Your available bal. is Ksh60.00.
+
+-----------------------------------
+Notifications when an error occours.
+
+The amount you are trying to 
+transfer is less than the
+minimum amount of 50.00Ksh
+allowed.

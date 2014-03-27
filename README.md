@@ -4,6 +4,7 @@ PesaPI is an unofficial open source API for mobile money systems, released under
 The system currently support:
 * Kenya: Mpesa paybill accounts
 * Kenya: Mpesa private accounts
+* Kenya: Airtel private accounts
 * Kenya: Yu private accounts (experimental)
 * Ghana: Airtel private accounts (experimental)
 * Rwanda: MNT private accounts (experimental)
