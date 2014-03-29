@@ -33,6 +33,19 @@ ALEX NDUNG'U 254723784491
 on 31/7/13 at 3:08 PM
 New M-PESA balance is Ksh5,844.00.Save & get a loan on Mshwari";
 
+Example 4.
+$example = "EV52AY844 Confirmed.
+You have received Ksh200.00 from
+0RENGE ALEX 254724613573
+on 29/3/14 at 1:38 AM
+New M-PESA balance is Ksh2,927.00.PIN YAKO SIRI YAKO";
+
+$example = "EV42RB339 Confirmed.
+You have received Ksh200.00 from
+BRIAN NGANGA 254722923120
+on 27/3/14 at 11:04 PM
+New M-PESA balance is Ksh3,366.00.PIN YAKO SIRI YAKO";
+
 -----------------------------------
 Notifications when an error occours.
 
