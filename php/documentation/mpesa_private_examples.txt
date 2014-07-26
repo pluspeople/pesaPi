@@ -125,3 +125,10 @@ $example = 'EB87ST824 Confirmed. You have transferred Ksh50.00 from your M-Shwar
 Notification when you receive a refund for a transaction you had paid to a "lipa na mpesa" account.
 
 EE56TY519 confirmed. Your Pay Shop transaction EE56TT315 of 10Ksh has been refunded by 971577 - JUKKA ENTERPRISES. Please contact 971577 - JUKKA ENTERPRISES for more information.  Your account balance is now 47Ksh.
+
+
+-----------------------------------
+Notification when safaricom reverses a transaction that came to your account.
+
+ER30SR746 Confirmed. Transaction EQ47FM754 has been reversed.  Your account balance is now Ksh5,987.00.
+
