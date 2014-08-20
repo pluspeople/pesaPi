@@ -27,13 +27,11 @@
 		SUCH DAMAGE.
  */
 
-require_once("../include/Configuration.php");
-require_once("../include/Database.php");
-require_once("../include/Setting.php");
-require_once("../include/SettingFactory.php");
-require_once("../include/Mpesapi.php");
+set_include_path("../../local_include:../../include:" . get_include_path());
+require_once("PLUSPEOPLE/autoload.php");
 
-$mpesa = new PLUSPEOPLE\Mpesapi\Mpesapi();
-$mpesa->forceSyncronisation();
+// Simple syncronisation example
+$pesa = new PLUSPEOPLE\PesaPi\PesaPi();
+$pesa->forceSyncronisation();
 
 ?>
