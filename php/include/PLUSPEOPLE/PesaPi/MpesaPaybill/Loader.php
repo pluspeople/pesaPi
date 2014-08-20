@@ -148,7 +148,7 @@ class Loader {
 
 			// TODO: needs to retrieve the following pages, in case there is more than 500 entries
 			$result = curl_exec($this->curl);
-  		file_put_contents("STEP1_STATEMENT.txt", $result);
+			//  		file_put_contents("STEP1_STATEMENT.txt", $result);
 			// TODO: missing error detection
 			$pages[] = $result;
 		}

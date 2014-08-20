@@ -147,6 +147,18 @@ class configtool extends \PLUSPEOPLE\SlowTemplate\Template {
 														"PASSWORD" => $settings["PASSWORD"],
 														"IPN" => "NOP"));
 
+				// Check if certificate file exists and is readable
+				if (trim($settings["CERTIFICATE"]) != "") {
+					$certificate = @file_get_contents($settings["CERTIFICATE"]);
+
+					if ($certificate != "") {
+						$slow->parse("Account_mpesa_paybill_certificate_exists");
+						$slow->parse("Account_mpesa_paybill_certificate_test");
+					} else {
+						$slow->parse("Account_mpesa_paybill_certificate_exists_not");
+					}
+				}
+
 				$slow->parse("Account_mpesa_paybill");
 				
 			} else {
@@ -159,6 +171,46 @@ class configtool extends \PLUSPEOPLE\SlowTemplate\Template {
 
 		$slow->parse("Accounts_wrap");
 		$slow->slowPrint("Accounts_wrap");
+	}
+
+	public function AJAXTestCertificate() {
+		$identifier = $_POST["identifier"];
+
+		$account = \PLUSPEOPLE\PesaPi\Base\AccountFactory::factoryByIdentifier($identifier);
+		if (is_object($account)) {
+			$settings = $account->getSettings();
+
+			if (trim($settings["CERTIFICATE"]) != "") {
+				$cookieFile = tmpfile();
+
+				$curl = curl_init("https://ke.m-pesa.com");
+				curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($curl, CURLOPT_COOKIESESSION, true);
+				curl_setopt($curl, CURLOPT_COOKIEJAR, $cookieFile);
+				curl_setopt($curl, CURLOPT_HEADER, true);
+				curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+				curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+				curl_setopt($curl, CURLOPT_SSLCERT, $settings["CERTIFICATE"]);
+				curl_setopt($curl, CURLOPT_SSLCERTTYPE, "PEM");
+
+				curl_setopt($curl, CURLOPT_URL, "https://ke.m-pesa.com/ke/");
+				curl_setopt($curl, CURLOPT_POST, false);
+				curl_setopt($curl, CURLOPT_COOKIEFILE, $cookieFile); 
+
+				$searchPage = curl_exec($curl);
+
+				if ($searchPage != "" AND stripos($searchPage, 'Welcome to the M-PESA Administration Website') !== FALSE) {
+					print "OK";
+					exit();
+				} else {
+					print "FAIL";
+					exit();
+				}
+			}
+		}
+		print "FAIL";
+		exit();
 	}
 
 	public function request() {

@@ -81,6 +81,21 @@
 			});
 		}
 
+		function testPaybillCertificate(iden) {
+			var package = {
+					AJAX: 'TestCertificate',
+          identifier: iden
+			};
+
+			$.post('', package, function(data) { 
+		    if (data == "OK") {
+		      alert('The certificate works perfect');
+				} else {
+		      alert('The certificate did not work!!! Possible issues: The certificate is in the wrong format, The certificate does not contain the PRIVATE KEYS, The certificate is expired. Please verify that the certificate works using CURL on a command line before trying again');
+		    }
+			});
+		}
+
     function resetForm(context) {
 				context.find('input[name="name"]').val('');
         context.find('input[name="identifier"]').val('');
@@ -771,8 +786,19 @@
 									<th colspan="2" class="text-center">Paybill specific</th>
 								</tr>
 								<tr>
-									<td>Certificate</td>
-									<td>{CERTIFICATE}</td>
+									<td>Certificate
+										<!-- BEGIN DYNAMIC BLOCK: Account_mpesa_paybill_certificate_test -->
+										<br/><button type="button" class="btn btn-success" onClick="testPaybillCertificate('{IDENTIFIER}');"><span class="glyphicon glyphicon-question-sign"></span> Test certificate</button>
+										<!-- END DYNAMIC BLOCK: Account_mpesa_paybill_certificate_test -->
+									</td>
+									<td>{CERTIFICATE}
+										<!-- BEGIN DYNAMIC BLOCK: Account_mpesa_paybill_certificate_exists -->
+										<br/><span style="color:#0F0;">File exists &amp; is readable</span>
+										<!-- END DYNAMIC BLOCK: Account_mpesa_paybill_certificate_exists -->
+										<!-- BEGIN DYNAMIC BLOCK: Account_mpesa_paybill_certificate_exists_not -->
+										<br/><span style="color:#F00;">FILE DOES NOT EXIST OR PATH IS INCORRECT</span>
+										<!-- END DYNAMIC BLOCK: Account_mpesa_paybill_certificate_exists_not -->
+									</td>
 								</tr>
 								<tr>
 									<td>Organisation</td>
