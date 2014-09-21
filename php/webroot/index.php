@@ -3,6 +3,10 @@ namespace Pluspeople\Pesapi;
 set_include_path("../local_include:../include:" . get_include_path());
 require_once("PLUSPEOPLE/autoload.php");
 
+if (version_compare(PHP_VERSION, '5.3.0') == -1) {
+	print "<h1>PesaPi requires at least PHP Version 5.3.0 - you are running PHP Version " . PHP_VERSION . "</h1>";
+	exit();
+}
 
 class configtool extends \PLUSPEOPLE\SlowTemplate\Template {
 	public function getTemplateFile() {
