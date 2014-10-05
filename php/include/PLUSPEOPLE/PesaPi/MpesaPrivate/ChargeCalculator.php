@@ -53,46 +53,107 @@ class ChargeCalculator {
 	}
 
 	static protected function sendingCost($time, $amount) {
-		if ($amount <= 4900) {
-			return 300;
-		} elseif ($amount <= 10000) {
-			return 500;
-		} elseif ($amount <= 50000) {
-			return 2700;
-		} elseif ($amount <= 500000) {
-			return 3300;
-		} elseif ($amount <= 2000000) {
-			return 5500;
-		} elseif ($amount <= 4500000) {
-			return 8200;
+		if ($time > 140951880) {
+			// Rates 1.Sep 2014 -
+			if ($amount <= 4900) {
+				return 100;
+			} elseif ($amount <= 10000) {
+				return 300;
+			} elseif ($amount <= 50000) {
+				return 1100;
+			} elseif ($amount <= 100000) {
+				return 1500;
+			} elseif ($amount <= 150000) {
+				return 2500;
+			} elseif ($amount <= 250000) {
+				return 4000;
+			} elseif ($amount <= 350000) {
+				return 5500;
+			} elseif ($amount <= 500000) {
+				return 6000;
+			} elseif ($amount <= 750000) {
+				return 7500;
+			} elseif ($amount <= 1000000) {
+				return 8500;
+			} elseif ($amount <= 1500000) {
+				return 9500;
+			} elseif ($amount <= 2000000) {
+				return 10000;
+			} else {
+				return 11000;
+			}
+
 		} else {
-			return 11000;
-		}
+			// Rates: 8.Feb 2013 to 1.Sep 2014
+			if ($amount <= 4900) {
+				return 300;
+			} elseif ($amount <= 10000) {
+				return 500;
+			} elseif ($amount <= 50000) {
+				return 2700;
+			} elseif ($amount <= 500000) {
+				return 3300;
+			} elseif ($amount <= 2000000) {
+				return 5500;
+			} elseif ($amount <= 4500000) {
+				return 8200;
+			} else {
+				return 11000;
+			}
 	}
 
 	static protected function withdrawCost($time, $amount) {
-		if ($amount <= 10000) {
-			return 1000;
-		} elseif ($amount <= 250000) {
-			return 2700;
-		} elseif ($amount <= 350000) {
-			return 4900;
-		} elseif ($amount <= 500000) {
-			return 6600;
-		} elseif ($amount <= 750000) {
-			return 8200;
-		} elseif ($amount <= 1000000) {
-			return 11000;
-		} elseif ($amount <= 1500000) {
-			return 15900;
-		} elseif ($amount <= 2000000) {
-			return 17600;
-		} elseif ($amount <= 3500000) {
-			return 18700;
-		} elseif ($amount <= 5000000) {
-			return 27500;
+		if ($time > 140951880) {
+			// Rates 1.Sep 2014 -
+			if ($amount <= 10000) {
+				return 100;
+			} elseif ($amount <= 250000) {
+				return 2700;
+			} elseif ($amount <= 350000) {
+				return 4900;
+			} elseif ($amount <= 500000) {
+				return 6600;
+			} elseif ($amount <= 750000) {
+				return 8200;
+			} elseif ($amount <= 1000000) {
+				return 11000;
+			} elseif ($amount <= 1500000) {
+				return 15900;
+			} elseif ($amount <= 2000000) {
+				return 17600;
+			} elseif ($amount <= 3500000) {
+				return 18700;
+			} elseif ($amount <= 5000000) {
+				return 27500;
+			} else {
+				return 33000;
+			}
+
 		} else {
-			return 33000;
+			// Rates: 8.Feb 2013 to 1.Sep 2014
+			if ($amount <= 10000) {
+				return 1000;
+			} elseif ($amount <= 250000) {
+				return 2700;
+			} elseif ($amount <= 350000) {
+				return 4900;
+			} elseif ($amount <= 500000) {
+				return 6600;
+			} elseif ($amount <= 750000) {
+				return 8200;
+			} elseif ($amount <= 1000000) {
+				return 11000;
+			} elseif ($amount <= 1500000) {
+				return 15900;
+			} elseif ($amount <= 2000000) {
+				return 17600;
+			} elseif ($amount <= 3500000) {
+				return 18700;
+			} elseif ($amount <= 5000000) {
+				return 27500;
+			} else {
+				return 33000;
+			}
 		}
 	}
 
