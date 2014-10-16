@@ -169,9 +169,9 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 			$rows = $scrubber->scrubRows($page);
 			// save data to database
 			foreach ($rows AS $row) {
-				$payment = Transaction::updateData($row, $this);
-				if (is_object($payment)) {
-					$this->handleCallback($payment);
+				$tuple = Transaction::updateData($row, $this);
+				if ($tuple[1] AND is_object($tuple[0])) {
+					$this->handleCallback($tuple[0]);
 				}
 			}
 		}
@@ -202,12 +202,13 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 									"COST" => 0);
 
 		if ($temp['AMOUNT'] > 0 AND $temp['RECEIPT'] != "") {
-			$transaction = Transaction::updateData($temp, $this);
+			$tuple = Transaction::updateData($temp, $this);
 
-			// Callback if needed
-			$this->handleCallback($transaction);
-
-			return $transaction;
+			if ($tuple[1]) {
+				// Callback if needed
+				$this->handleCallback($tuple[0]);
+			}
+			return $tuple[0];
 		}
 		return null;
 	}

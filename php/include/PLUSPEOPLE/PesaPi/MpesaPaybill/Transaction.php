@@ -79,10 +79,10 @@ class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
 			}
 			
 			$existing[0]->update();
-			return $existing[0];
+			return array($existing[0], false);
 
 		} else {
-			return Transaction::import($account, $row);
+			return array(Transaction::import($account, $row), true);
 		}
 	}
 
