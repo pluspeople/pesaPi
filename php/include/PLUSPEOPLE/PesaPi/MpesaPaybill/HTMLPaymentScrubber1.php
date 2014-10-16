@@ -66,7 +66,7 @@ class HTMLPaymentScrubber1 {
 		// Reciept
 		$matches = array();
 		if (preg_match('/<td\s*>\s*<a\s.+>(.+)<\/a\s*>\s*<\/td\s*>/iU', $rawtext, $matches) > 0) {
-			$result['RECIEPT'] = trim($matches[1]);
+			$result['RECEIPT'] = trim($matches[1]);
 		}
 		
 		// Time
