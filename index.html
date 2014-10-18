@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 <html>
-
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="description" content="Pesapi : Mobile money middleware">
-
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
     <title>Pesapi</title>
   </head>
 
   <body>
-
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
@@ -21,94 +17,97 @@
           <h1 id="project_title">Pesapi</h1>
           <h2 id="project_tagline">Mobile money middleware</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/pluspeople/pesaPi/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/pluspeople/pesaPi/tarball/master">Download this project as a tar.gz file</a>
-            </section>
+					<div style="float:left;">
+						<div style="float:left;width:80px;background-color:#0090FF;padding:5px;padding-bottom:2px;color:#FFF;" onclick="document.location='index.html';">Home</div>
+						<div style="float:left;width:80px;background-color:#0090FF;padding:5px;padding-bottom:2px;margin-left:5px;" onclick="document.location='howto.html';">How-to</div>
+						<div style="float:left;width:80px;background-color:#0090FF;padding:5px;padding-bottom:2px;margin-left:5px;" onclick="document.location='contribute.html';">Contribute</div>
+					</div>
+          <section id="downloads">
+
+            <a class="zip_download_link" href="https://github.com/pluspeople/pesaPi/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/pluspeople/pesaPi/tarball/master">Download this project as a tar.gz file</a>
+          </section>
         </header>
     </div>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h1>
-<a name="pesapi" class="anchor" href="#pesapi"><span class="octicon octicon-link"></span></a>PesaPI</h1>
+        <h1>PesaPI</h1>
+				<p>PesaPI is an open source API for mobile money systems, released under the BSD(lite) license.<br>
+					Using PesaPI you can save considerable time and effort when integrating mobile money systems into your application, making it easy for your application to detect when a payment has been received.</p>
+				<p>The system currently supports:</p>
+				<ul>
+					<li>Kenya
+						<ul>
+							<li>MPESA paybill accounts</li>
+							<li>MPESA lipa-na-mpesa (buy-goods) accounts</li>
+							<li>MPESA private accounts</li>
+							<li>Airtel private accounts</li>
+						</ul>
+					</li>
+					<li>Tanzania
+						<ul>
+							<li>MPESA private accounts</li>
+							<li>Tigo private accounts</li>
+						</ul>
+					</li>
+					<li>Ghana
+						<ul>
+							<li>Airtel private accounts (experimental)</li>
+						</ul>
+					</li>
+					<li>Rwanda
+						<ul>
+							<li>MNT private accounts (experimental)</li>
+						</ul>
+					</li>
+				</ul>
 
-<p>PesaPI is an unofficial open source API for mobile money systems, released under the BSD(lite) license.<br>
-The system currently support:</p>
+				<p>You can easily <a href="contribute.html">help us support more mobile money systems</a> - even if you are not a developer</p>
 
-<ul>
-<li>Kenya: Mpesa paybill accounts</li>
-<li>Kenya: Mpesa private accounts</li>
-<li>Kenya: Airtel private accounts</li>
-<li>Kenya: Yu private accounts (experimental)</li>
-<li>Ghana: Airtel private accounts (experimental)</li>
-<li>Rwanda: MNT private accounts (experimental)</li>
-<li>Tanzania: Mpesa private accounts</li>
-<li>Tanzania: Tigo private accounts</li>
-</ul><p>The API supports both PUSH and PULL versions.
-The PHP version of the API is generally the most mature and recomended at this point - the system is build using Mysql and Curl.
-Please direct all questions to the public mailing-list "pesaPi" on Google-groups: <a href="http://groups.google.com/group/pesapi">http://groups.google.com/group/pesapi</a></p>
 
-<h2>
-<a name="short-example" class="anchor" href="#short-example"><span class="octicon octicon-link"></span></a>Short example</h2>
+				<h2>Current status</h2>
+				<p>PesaPI is considered production ready for most of the supported mobile money systems, and is in active use in several solutions. However keep in mind that mobile money systems often change behaviour and that Telco's are often not very good at informing the public about these changes, as such it is important that you maintain your PesaPI installation and keep it updated as time progresses.</p>
 
-<p>For a short usage example please see:
-<a href="http://www.youtube.com/gifair">http://www.youtube.com/gifair</a></p>
+				<h2>Current development focus</h2>
+				<p>All development on PesaPI is done on a voluenteer basis, hence there are no defined timeline for development. Features are included when someone builds the code and it is integrated into the main project.</p>
+				<p>If you are impatient about a certain feature being build then the best way to make it happen is to either A: build it yourself and contribute it to the project, or B: hire a developer and contribute it to the project</p>
 
-<h2>
-<a name="current-status" class="anchor" href="#current-status"><span class="octicon octicon-link"></span></a>Current status</h2>
+				<p>That said the current development focus is:</p>
+				<ul>
+					<li>Add support for more payment systems.</li>
+					<li>Improving documentation.</li>
+					<li>Android version to make it (super) easy to accept mobile money payments in your app</li>
+				</ul>
 
-<p>The current system should be considered as beta version - at least one commercial solution is using it as its payment gateway.
-However it is not recomended that you deploy the system without having a developer available to support the setup.</p>
 
-<p>Version 0.1.0 was recently released and is contains a major rework of the internal structures of PesaPi - be alert that things that worked previously may not be fully working yet - as detailed testing is ongoing.</p>
+				<h2>Forum</h2>
+				<p>If you need help, have questions or otherwise want to discuss anything PesaPI related then it is highly recommended that you use the <a href="https://groups.google.com/forum/#!forum/pesapi">PesaPI mailing-list which is found here</a> and shown below.</p>
 
-<p>Currently we are looking for people to provide copies of the SMS messages they are getting from various payment systems.</p>
+				<iframe id="forum_embed"
+								src="javascript:void(0)"
+								scrolling="yes"
+								frameborder="0"
+								width="6300"
+								height="700">
+				</iframe>
+				<script type="text/javascript">
+					document.getElementById('forum_embed').src =
+					'https://groups.google.com/forum/embed/?place=forum/pesapi'
+					+ '&showsearch=true&showpopout=true&showtabs=false'
+					+ '&parenturl=' + encodeURIComponent(window.location.href);
+				</script> 
 
-<h2>
-<a name="system-design-overview" class="anchor" href="#system-design-overview"><span class="octicon octicon-link"></span></a>System design overview</h2>
-
-<ul>
-<li>Supports both push and pull notifications.</li>
-<li>Does synchroization between local and server database.</li>
-<li>Transaction data are available even when main server is down.</li>
-<li>Super easy to utilize for integrators.</li>
-<li>Fast response on historical data.</li>
-<li>Keep the load on servers as low as possible.</li>
-<li>Hopefully more reliable than other APIs.</li>
-</ul><h2>
-<a name="api-overview" class="anchor" href="#api-overview"><span class="octicon octicon-link"></span></a>API Overview</h2>
-
-<p>The PesaPi class contains several static methods, these methods are the main interface.</p>
-
-<ul>
-<li>availableBalance(time) -- returns the balance at a given point in time</li>
-<li>locateByReceipt(receipt) -- returns a payment or null for the given receipt number</li>
-<li>locateByPhone(phone, from, until) -- returns an array of payments from a particular phone</li>
-<li>locateByName(name, from, until) -- returns an array of payments from a particular client name</li>
-<li>locateByAccount(account, from, until) -- returns an array of payments from a particular account-no</li>
-<li>locateByTimeInterval(from, until) -- returns an array of all payments within a given time interval </li>
-</ul><p>As an alternative you can ask PesaPi to call a your on your site when a new transaction is received (push mechanics).</p>
-
-<h2>
-<a name="way-forward" class="anchor" href="#way-forward"><span class="octicon octicon-link"></span></a>Way forward</h2>
-
-<p>The following is a highlevel "todo" list for the project</p>
-
-<ul>
-<li>Getting the code to release/production quality.</li>
-<li>Getting more developers onboard.</li>
-<li>Add support for more payment systems.</li>
-</ul>
       </section>
     </div>
+
+
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Pesapi maintained by <a href="https://github.com/pluspeople">pluspeople</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+				&nbsp;
       </footer>
     </div>
 
