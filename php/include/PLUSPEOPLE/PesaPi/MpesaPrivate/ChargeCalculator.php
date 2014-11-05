@@ -100,6 +100,7 @@ class ChargeCalculator {
 			} else {
 				return 11000;
 			}
+		}
 	}
 
 	static protected function withdrawCost($time, $amount) {
