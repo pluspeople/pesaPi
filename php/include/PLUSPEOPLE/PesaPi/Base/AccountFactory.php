@@ -119,6 +119,18 @@ settings ";
 		case Account::KENYA_AIRTEL_PRIVATE:
 			$object = new \PLUSPEOPLE\PesaPi\KenyaAirtelPrivate\Account($id, $initValues);
 		break;
+		case Account::KENYA_AIRTEL_PAYBILL:
+			$object = new \PLUSPEOPLE\PesaPi\KenyaAirtelPaybill\Account($id, $initValues);
+		break;
+		case Account::SOMALIA_GOLIS_PRIVATE:
+			$object = new \PLUSPEOPLE\PesaPi\SomaliaGolisPrivate\Account($id, $initValues);
+		break;
+		case Account::SOMALIA_TELESOME_PRIVATE:
+			$object = new \PLUSPEOPLE\PesaPi\SomaliaTelesomePrivate\Account($id, $initValues);
+		break;
+		case Account::SOMALIA_HORMUUD_PRIVATE:
+			$object = new \PLUSPEOPLE\PesaPi\SomaliaHormuudPrivate\Account($id, $initValues);
+		break;
     }
     return $object;
   }

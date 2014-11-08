@@ -34,12 +34,16 @@ class Account {
   //############### Properties ####################
 	const MPESA_PAYBILL = 1;
 	const MPESA_PRIVATE = 2;
-	const KENYA_YU_PRIVATE = 3;
+	const KENYA_YU_PRIVATE = 3; // Yu have folded - this will be removed.
 	const GHANA_AIRTEL_PRIVATE = 4;
 	const RWANDA_MTN_PRIVATE = 5;
 	const TANZANIA_MPESA_PRIVATE = 6;
 	const TANZANIA_TIGO_PRIVATE = 7;
 	const KENYA_AIRTEL_PRIVATE = 8;
+	const KENYA_AIRTEL_PAYBILL = 9;
+	const SOMALIA_GOLIS_PRIVATE = 10;
+	const SOMALIA_TELESOME_PRIVATE = 11;
+	const SOMALIA_HORMUUD_PRIVATE = 12;
 
   protected $id = 0;
   protected $type = 0;

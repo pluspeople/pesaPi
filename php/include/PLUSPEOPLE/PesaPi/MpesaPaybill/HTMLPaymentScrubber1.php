@@ -61,6 +61,12 @@ class HTMLPaymentScrubber1 {
 										"NOTE" => "",
 										"COST" => 0);
 
+		///////////////////////
+		// DETECT if it is a Null result row
+		if (strpos ($rawtext, '<span>No records to display.</span>') !== FALSE) {
+			return null;
+		}
+
 		/////////////////////////
 		// First identify those properties that are the same for all types
 		// Reciept

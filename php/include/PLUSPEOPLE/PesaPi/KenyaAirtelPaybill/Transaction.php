@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2014, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -28,52 +28,13 @@
 
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi\MpesaPaybill;
+namespace PLUSPEOPLE\PesaPi\KenyaAirtelPaybill;
 
-class Scrubber {
-	const VERSION = "1.0";
+class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
+	// Extended attributes
+	const KE_AIRTEL_PAYBILL_PAYMENT_RECEIVED = 901;
 
-	public static function numberInput($input) {
-		$input = trim($input);
-		$amount = 0;
-
-		if (preg_match("/^[0-9,]+$/", $input)) {
-			$amount = 100 * (int)str_replace(',', '', $input);
-		} elseif (preg_match("/^[0-9,]+\.[0-9]$/", $input)) {
-			$amount = 10 * (int)str_replace(array('.', ','), '', $input);
-		} elseif (preg_match("/^[0-9,]*\.[0-9][0-9]$/", $input)) {
-			$amount = (int)str_replace(array('.', ','), '', $input);
-		} else {
-			$amount = (int)$input;
-		}
-		return $amount;
-	}
-
-	public static function dateInput($input) {
-		$timeStamp = strtotime($input);
-		if ($timeStamp != FALSE) {
-			return $timeStamp;
-		}
-		return 0;
-	}
-
-	public static function ScrubRows(&$data) {
-		$result = array();
-		$rows = HTMLPaymentScrubber1::scrubPaymentRows($data);
-
-		foreach($rows AS $row) {
-			$transaction = HTMLPaymentScrubber1::scrubPayment($row);
-			if ($transaction != null) {
-				$result[] = $transaction;
-			}
-		}
-
-		// return the reverse array - we want the oldest first
-		return $result;
-	}
-
+	const KE_AIRTEL_PAYBILL_UNKOWN = 999;
 }
-
-
 
 ?>
