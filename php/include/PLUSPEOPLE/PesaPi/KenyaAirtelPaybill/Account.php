@@ -29,7 +29,6 @@
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
 namespace PLUSPEOPLE\PesaPi\KenyaAirtelPaybill;
-use PLUSPEOPLE\PesaPi\Base\Database;
 use PLUSPEOPLE\PesaPi\Base\TransactionFactory;
 
 class Account extends \PLUSPEOPLE\PesaPi\Base\Account { 
@@ -43,7 +42,7 @@ class Account extends \PLUSPEOPLE\PesaPi\Base\Account {
 			$time = time();
 		}
 
-		$balance = \PLUSPEOPLE\PesaPi\Base\TransactionFactory::factoryOneByTime($this, $time);
+		$balance = TransactionFactory::factoryOneByTime($this, $time);
 		if (is_object($balance)) {
 			return $balance->getPostBalance();
 		}
@@ -85,6 +84,36 @@ class Account extends \PLUSPEOPLE\PesaPi\Base\Account {
 		return null;
 	}
 
+	public function forceSyncronisation() {
+		// determine the start time
+		$settings = $this->getSettings();
+		$lastSync = $settings["LAST_SYNC"];
+
+		// We keep the timestamp from just _BEFORE_ we start connecting - this way we ensure that incomming payment while 
+		// the process is in operation will be discovered at the NEXT request.
+		$now = time();
+
+		// perform file fetch
+		$loader = new Loader($this);
+		$pages = $loader->retrieveData($lastSync);
+		// perform analysis/scrubbing
+		$parser = new Parser();
+		foreach ($pages AS $page) {
+			$rows = $parser->scrubTransactions($page);
+			// save data to database
+			foreach ($rows AS $row) {
+				$tuple = Transaction::updateData($row, $this);
+				if ($tuple[1] AND is_object($tuple[0])) {
+					$this->handleCallback($tuple[0]);
+				}
+			}
+		}
+
+		// TODO save last entry time as last sync - not "now" sometimes the statement updates are delayed
+		$settings["LAST_SYNC"] = $now;
+		$this->setSettings($settings);
+		$this->update();
+	}
 }
 
 ?>

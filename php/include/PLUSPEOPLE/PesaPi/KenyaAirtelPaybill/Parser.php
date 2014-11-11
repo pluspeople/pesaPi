@@ -31,18 +31,25 @@
 namespace PLUSPEOPLE\PesaPi\KenyaAirtelPaybill;
 
 class Parser {
-	static public function scrubPaymentRows(&$rawtext) {
+	public function scrubTransactions($rawtext) {
+		$result = array();
 		$temp = array();
 
 		preg_match_all('/Source&nbsp;Info<\/td>[\s\n\r]*<\/tr>(.+)<tr style="vertical-align:top;">[\s\n\r]*<td style="width:0px;height:387px;"><\/td>/msi', $rawtext, $temp);
 		if (isset($temp[1][0])) {
-			return array_reverse(preg_split('/<\/tr>[\s\n\r]*<tr style="vertical-align:top;">/', $temp[1][0]));
+			$rows = array_reverse(preg_split('/<\/tr>[\s\n\r]*<tr style="vertical-align:top;">/', $temp[1][0]));
+			foreach($rows AS $row) {
+				$transaction = $this->scrubRow($row);
+				if ($transaction != null) {
+					$result[] = $transaction;
+				}
+			}
 		}
 
-		return array();
+		return $result;
 	} 
 
-	static public function scrubPayment(&$rawtext) {
+	public function scrubRow($rawtext) {
 		$result = array("SUPER_TYPE" => 0,
 										"TYPE" => 0,
 										"RECEIPT" => "",
@@ -56,7 +63,31 @@ class Parser {
 										"NOTE" => "",
 										"COST" => 0);
 
-		return $result;
+		$temp = array();
+		preg_match_all('/<td [^>]*>(.*)<\/td>/Umsi', $rawtext, $temp);
+
+		if (isset($temp[1]) AND count($temp[1]) >= 11) {
+			if ($temp[1][9] == "&nbsp;-&nbsp;CASH&nbsp;RECEIVE") {
+				$result["SUPER_TYPE"] = Transaction::MONEY_IN;
+				$result["TYPE"] = Transaction::KE_AIRTEL_PAYBILL_PAYMENT_RECEIVED;
+				$result["RECEIPT"] = trim(strip_tags($temp[1][3]));
+				$result["TIME"] = strtotime(str_replace('&nbsp;', ' ', $temp[1][2]));
+				$result["PHONE"] = trim(strip_tags($temp[1][4]));
+				$result["NAME"] = trim(str_replace('&nbsp;', ' ', $temp[1][10]));
+				//				$result["ACCOUNT"] = "NOT DONE"; // NOT DONE
+				$result["STATUS"] = Transaction::STATUS_COMPLETED;
+				$result["AMOUNT"] = (int)(((double)$temp[1][8])*100);
+				$result["BALANCE"] = (int)(((double)$temp[1][7])*100);
+
+			} else {
+				$result["SUPER_TYPE"] = Transaction::MONEY_NEUTRAL;
+				$result["TYPE"] = Transaction::KE_AIRTEL_PAYBILL_UNKOWN;
+				$result["NOTE"] = $rawtext;
+			}
+
+			return $result;
+		}
+		return null;
 	}
 
 }

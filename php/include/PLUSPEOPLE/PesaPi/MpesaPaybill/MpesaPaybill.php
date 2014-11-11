@@ -29,7 +29,6 @@
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
 namespace PLUSPEOPLE\PesaPi\MpesaPaybill;
-use PLUSPEOPLE\PesaPi\Base\Database;
 use PLUSPEOPLE\PesaPi\Base\TransactionFactory;
 
 class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account { 

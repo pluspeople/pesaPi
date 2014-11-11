@@ -59,6 +59,10 @@ class Loader {
 	}
 
 	public function retrieveData($fromTime) {
+		////  DEBUG
+		//		$rawtext = file_get_contents('STEP3_RESULT.txt');
+		//		return array($rawtext);
+
 		$fromTime = (int)$fromTime;
 		$pages = array();
 		if ($fromTime > 0) {
