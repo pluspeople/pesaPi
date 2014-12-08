@@ -39,6 +39,7 @@ class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
 	const MPESA_PAYBILL_FUNDS_CANCELLATION = 4;
 	const MPESA_PAYBILL_BUSINESS_CHARGES = 5;
 	const MPESA_PAYBILL_BUSINESS_CHARGES_CANCELLATION = 6;
+	const MPESA_PAYBILL_TRANSFER_FROM_UTILITY = 107;
 	const MPESA_PAYBILL_UNKOWN = 199;
 
 	public static function updateData($row, $account) {

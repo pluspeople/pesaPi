@@ -154,9 +154,6 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 		// determine the start time
 		$settings = $this->getSettings();
 		$lastSync = $settings["LAST_SYNC"];
-
-		// We keep the timestamp from just _BEFORE_ we start connecting - this way we ensure that incomming payment while 
-		// the process is in operation will be discovered at the NEXT request.
 		$now = time();
 
 		// perform file fetch
@@ -175,10 +172,14 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 			}
 		}
 
-		// save last entry time as last sync
-		$settings["LAST_SYNC"] = $now;
-		$this->setSettings($settings);
-		$this->update();
+		// save last entry time as last sync - but only if any is found.
+		// this way we are safeguarded against MPESA fallouts like the one of 3-5 November 2014
+		$lastFound = \PLUSPEOPLE\PesaPi\Base\TransactionFactory::factoryOneByTime($this, $now);
+		if (is_object($lastFound)) {
+			$settings["LAST_SYNC"] = $lastFound->getTime();
+			$this->setSettings($settings);
+			$this->update();
+		}
 	}
 
 
@@ -187,29 +188,82 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 	}
 
 	public function importIPN($get) {
-		$temp = array("SUPER_TYPE" => Transaction::MONEY_IN,
-									"TYPE" => Transaction::MPESA_PAYBILL_PAYMENT_RECIEVED,
-									"RECEIPT" => $get['mpesa_code'],
-									"TIME" => Scrubber::dateInput($get['tstamp']),
-									"PHONE" => '0' . substr($get['mpesa_msisdn'], -9),
-									"NAME" => $get['mpesa_sender'],
-									"ACCOUNT" => $get['mpesa_acc'],
-									"STATUS" => Transaction::STATUS_COMPLETED,
-									"AMOUNT" => Scrubber::numberInput($get['mpesa_amt']),
-									"BALANCE" => 0,
-									"NOTE" => $get['text'],
-									"COST" => 0);
+		if (strpos($get['text'], ' received from ') !== FALSE) {
+			$temp = array("SUPER_TYPE" => Transaction::MONEY_IN,
+										"TYPE" => Transaction::MPESA_PAYBILL_PAYMENT_RECIEVED,
+										"RECEIPT" => $get['mpesa_code'],
+										"TIME" => Scrubber::dateInput($get['tstamp']),
+										"PHONE" => '0' . substr($get['mpesa_msisdn'], -9),
+										"NAME" => $get['mpesa_sender'],
+										"ACCOUNT" => $get['mpesa_acc'],
+										"STATUS" => Transaction::STATUS_COMPLETED,
+										"AMOUNT" => Scrubber::numberInput($get['mpesa_amt']),
+										"BALANCE" => 0,
+										"NOTE" => $get['text'],
+										"COST" => 0);
 
-		if ($temp['AMOUNT'] > 0 AND $temp['RECEIPT'] != "") {
-			$tuple = Transaction::updateData($temp, $this);
-
-			if ($tuple[1]) {
-				// Callback if needed
-				$this->handleCallback($tuple[0]);
+			if ($temp['AMOUNT'] > 0 AND $temp['RECEIPT'] != "") {
+				$tuple = Transaction::updateData($temp, $this);
+				
+				if ($tuple[1]) {
+					// Callback if needed
+					$this->handleCallback($tuple[0]);
+				}
+				return $tuple[0];
 			}
-			return $tuple[0];
+			return null;
+
+		} elseif (strpos($get['text'], ' transferred from Utility Account to Working Account.') !== FALSE) {
+			$temp = array("SUPER_TYPE" => Transaction::MONEY_IN,
+										"TYPE" => Transaction::MPESA_PAYBILL_TRANSFER_FROM_UTILITY,
+										"RECEIPT" => $get['mpesa_code'],
+										"TIME" => Scrubber::dateInput($get['tstamp']),
+										"PHONE" => '',
+										"NAME" => '',
+										"ACCOUNT" => '',
+										"STATUS" => Transaction::STATUS_COMPLETED,
+										"AMOUNT" => Scrubber::numberInput($get['mpesa_amt']), // NOT DONE
+										"BALANCE" => 0, // NOT DONE
+										"NOTE" => $get['text'],
+										"COST" => 0);
+
+			if ($temp['AMOUNT'] > 0 AND $temp['RECEIPT'] != "") {
+				$tuple = Transaction::updateData($temp, $this);
+				
+				if ($tuple[1]) {
+					// Callback if needed
+					$this->handleCallback($tuple[0]);
+				}
+				return $tuple[0];
+			}
+			return null;
+
+		} else {
+			// Unknown transaction.
+			$temp = array("SUPER_TYPE" => Transaction::MONEY_NEUTRAL,
+										"TYPE" => Transaction::MPESA_PAYBILL_UNKOWN,
+										"RECEIPT" => $get['mpesa_code'],
+										"TIME" => Scrubber::dateInput($get['tstamp']),
+										"PHONE" => '',
+										"NAME" => '',
+										"ACCOUNT" => '',
+										"STATUS" => Transaction::STATUS_COMPLETED,
+										"AMOUNT" => 0,
+										"BALANCE" => 0,
+										"NOTE" => serialize($get),
+										"COST" => 0);
+
+			if ($temp['AMOUNT'] > 0 AND $temp['RECEIPT'] != "") {
+				$tuple = Transaction::updateData($temp, $this);
+				
+				if ($tuple[1]) {
+					// Callback if needed
+					$this->handleCallback($tuple[0]);
+				}
+				return $tuple[0];
+			}
+			return null;
 		}
-		return null;
 	}
 
 }
