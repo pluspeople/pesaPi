@@ -131,6 +131,9 @@ settings ";
 		case Account::SOMALIA_HORMUUD_PRIVATE:
 			$object = new \PLUSPEOPLE\PesaPi\SomaliaHormuudPrivate\Account($id, $initValues);
 		break;
+		case Account::GHANA_MTN_PRIVATE:
+			$object = new \PLUSPEOPLE\PesaPi\GhanaMTNPrivate\Account($id, $initValues);
+		break;
     }
     return $object;
   }

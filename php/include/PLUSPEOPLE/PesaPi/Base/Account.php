@@ -44,6 +44,7 @@ class Account {
 	const SOMALIA_GOLIS_PRIVATE = 10;
 	const SOMALIA_TELESOME_PRIVATE = 11;
 	const SOMALIA_HORMUUD_PRIVATE = 12;
+	const GHANA_MTN_PRIVATE = 13;
 
   protected $id = 0;
   protected $type = 0;
