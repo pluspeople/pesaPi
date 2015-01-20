@@ -28,22 +28,45 @@
 
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi\GhanaMTNPrivate;
+namespace PLUSPEOPLE\PesaPi\Base;
 
-class Account extends \PLUSPEOPLE\PesaPi\Base\PrivateAccount { 
-	public function getFormatedType() {
-		return "Ghana - MTN Private";
+class Parser { 
+	public function getBlankStructure() {
+		return array("SUPER_TYPE" => 0,
+								 "TYPE" => 0,
+								 "RECEIPT" => "",
+								 "TIME" => 0,
+								 "PHONE" => "",
+								 "NAME" => "",
+								 "ACCOUNT" => "",
+								 "STATUS" => "",
+								 "AMOUNT" => 0,
+								 "BALANCE" => 0,
+								 "NOTE" => "",
+								 "COST" => 0);
 	}
 
-	public function getSender() {
-		return ""; // Unknown at this point - security risk
+	public function dateInput($time, $format) {
+		$dt = \DateTime::createFromFormat($format, $time);
+		return $dt->getTimestamp();
 	}
 
-	// Namespace mismatch workaround
-	public function parserFactory() {
-		return new Parser();
+	public function numberInput($input) {
+		$input = trim($input);
+		$amount = 0;
+
+		if (preg_match("/^[0-9,]+\.?$/", $input)) {
+			$amount = 100 * (int)str_replace(',', '', $input);
+		} elseif (preg_match("/^[0-9,]+\.[0-9]$/", $input)) {
+			$amount = 10 * (int)str_replace(array('.', ','), '', $input);
+		} elseif (preg_match("/^[0-9,]*\.[0-9][0-9]$/", $input)) {
+			$amount = (int)str_replace(array('.', ','), '', $input);
+		} else {
+			$amount = (int)$input;
+		}
+		return $amount;
 	}
+
 
 }
-
 ?>

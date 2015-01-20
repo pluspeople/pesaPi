@@ -30,44 +30,10 @@
 		Based on examples provided by Baba Musah
  */
 namespace PLUSPEOPLE\PesaPi\GhanaMTNPrivate;
-use \PLUSPEOPLE\PesaPi\Base\Utility;
 
-class Parser {
-	public function dateInput($time) {
-		$dt = \DateTime::createFromFormat("n/j/Y h:i:s A", $time);
-		return $dt->getTimestamp();
-	}
-
-	public function numberInput($input) {
-		$input = trim($input);
-		$amount = 0;
-
-		if (preg_match("/^[0-9,]+\.?$/", $input)) {
-			$amount = 100 * (int)str_replace(',', '', $input);
-		} elseif (preg_match("/^[0-9,]+\.[0-9]$/", $input)) {
-			$amount = 10 * (int)str_replace(array('.', ','), '', $input);
-		} elseif (preg_match("/^[0-9,]*\.[0-9][0-9]$/", $input)) {
-			$amount = (int)str_replace(array('.', ','), '', $input);
-		} else {
-			$amount = (int)$input;
-		}
-		return $amount;
-	}
-
+class Parser extends \PLUSPEOPLE\PesaPi\Base\Parser {
 	public function parse($input) {
-		$result = array("SUPER_TYPE" => 0,
-										"TYPE" => 0,
-										"RECEIPT" => "",
-										"TIME" => 0,
-										"PHONE" => "",
-										"NAME" => "",
-										"ACCOUNT" => "",
-										"STATUS" => "",
-										"AMOUNT" => 0,
-										"BALANCE" => 0,
-										"NOTE" => "",
-										"COST" => 0);
-
+		$result = $this->getBlankStructure();
 
 		// REFACTOR: should be split into subclasses
 		if (strpos($input, "Payment received for GHC") !== FALSE) {

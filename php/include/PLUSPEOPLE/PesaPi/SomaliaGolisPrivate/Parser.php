@@ -30,14 +30,11 @@
 		Based on examples provided by Ali Saiid
  */
 namespace PLUSPEOPLE\PesaPi\SomaliaGolisPrivate;
-use \PLUSPEOPLE\PesaPi\Base\Utility;
 
-class Parser {
-	public function dateInput($time) {
-		$dt = \DateTime::createFromFormat("n/j/Y h:i:s A", $time);
-		return $dt->getTimestamp();
-	}
+class Parser extends \PLUSPEOPLE\PesaPi\Base\Parser{
+	const DATE_FORMAT = "n/j/Y h:i:s A";
 
+	// Custom numberInput function needed as Somalia uses 3 decimal digits.
 	public function numberInput($input) {
 		$input = trim($input);
 		$amount = 0;
@@ -57,19 +54,7 @@ class Parser {
 	}
 
 	public function parse($input) {
-		$result = array("SUPER_TYPE" => 0,
-										"TYPE" => 0,
-										"RECEIPT" => "",
-										"TIME" => 0,
-										"PHONE" => "",
-										"NAME" => "",
-										"ACCOUNT" => "",
-										"STATUS" => "",
-										"AMOUNT" => 0,
-										"BALANCE" => 0,
-										"NOTE" => "",
-										"COST" => 0);
-
+		$result = $this->getBlankStructure();
 
 		// REFACTOR: should be split into subclasses
 		// [SAHAL] Ref:302228123 confirmed. $100 Received from c/risaaq axmed(7763277) on 10/23/2014 12:07:57 PM. New A/c balance is $101.780.
@@ -84,7 +69,7 @@ class Parser {
 				$result["AMOUNT"] = $this->numberInput($temp[2][0]);
 				$result["NAME"] = $temp[3][0];
 				$result["PHONE"] = $temp[4][0];
-				$result["TIME"] = $this->dateInput($temp[5][0] . " " . $temp[6][0]);
+				$result["TIME"] = $this->dateInput(Parser::DATE_FORMAT, $temp[5][0] . " " . $temp[6][0]);
 				$result["BALANCE"] = $this->numberInput($temp[7][0]);
 			}
 
@@ -100,7 +85,7 @@ class Parser {
 				$result["AMOUNT"] = $this->numberInput($temp[2][0]);
 				$result["NAME"] = $temp[3][0];
 				$result["PHONE"] = $temp[4][0];
-				$result["TIME"] = $this->dateInput($temp[5][0] . " " . $temp[6][0]);
+				$result["TIME"] = $this->dateInput(Parser::DATE_FORMAT, $temp[5][0] . " " . $temp[6][0]);
 				$result["BALANCE"] = $this->numberInput($temp[7][0]);
 			}
 

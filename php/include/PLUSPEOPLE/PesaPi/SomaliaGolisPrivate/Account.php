@@ -29,62 +29,20 @@
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
 namespace PLUSPEOPLE\PesaPi\SomaliaGolisPrivate;
-use PLUSPEOPLE\PesaPi\Base\Database;
-use PLUSPEOPLE\PesaPi\Base\TransactionFactory;
 
-class Account extends \PLUSPEOPLE\PesaPi\Base\Account { 
+class Account extends \PLUSPEOPLE\PesaPi\Base\PrivateAccount { 
 	public function getFormatedType() {
 		return "Somalia - Golis Sahal Private";
 	}
 
-	public function availableBalance($time = null) {
-		$time = (int)$time;
-		if (0 == $time) {
-			$time = time();
-		}
-
-		$balance = \PLUSPEOPLE\PesaPi\Base\TransactionFactory::factoryOneByTime($this, $time);
-		if (is_object($balance)) {
-			return $balance->getPostBalance();
-		}
-		return $amount;
+	public function getSender() {
+		return ""; // unknown at this point - security risk
 	}
 
-	public function locateByReceipt($receipt) {
-		return TransactionFactory::factoryByReceipt($this, $receipt);
+	// Namespace mismatch workaround
+	public function parserFactory() {
+		return new Parser();
 	}
-
-	public function initTransaction($id, $initValues = null) {
-		return new Transaction($id, $initValues);
-	}
-
-	public function importTransaction($message) {
-		if ($message != "") {
-			$parser = new Parser();
-			$temp = $parser->parse($message);
-
-			$transaction = Transaction::createNew($this->getId(), $temp['SUPER_TYPE'], $temp['TYPE']);
-			$transaction->setReceipt($temp['RECEIPT']);
-			$transaction->setTime($temp["TIME"]);
-			$transaction->setPhonenumber($temp['PHONE']);
-			$transaction->setName($temp['NAME']);
-			$transaction->setAccount($temp['ACCOUNT']);
-			$transaction->setStatus($temp['STATUS']);
-			$transaction->setAmount($temp['AMOUNT']);
-			$transaction->setPostBalance($temp['BALANCE']);
-			$transaction->setNote($temp['NOTE']);
- 			$transaction->setTransactionCost($temp['COST']);
-			
-			$transaction->update();
-
-			// Callback if needed
-			$this->handleCallback($transaction);
-
-			return $transaction;
-		}
-		return null;
-	}
-
 }
 
 ?>

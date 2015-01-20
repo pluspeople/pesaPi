@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2014, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2015, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -28,22 +28,13 @@
 
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
  */
-namespace PLUSPEOPLE\PesaPi\GhanaMTNPrivate;
+namespace PLUSPEOPLE\PesaPi\CongoMpesaPrivate;
 
-class Account extends \PLUSPEOPLE\PesaPi\Base\PrivateAccount { 
-	public function getFormatedType() {
-		return "Ghana - MTN Private";
-	}
+class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
+	// Extended attributes
+	const CO_MPESA_PRIVATE_PAYMENT_RECEIVED = 1401;
 
-	public function getSender() {
-		return ""; // Unknown at this point - security risk
-	}
-
-	// Namespace mismatch workaround
-	public function parserFactory() {
-		return new Parser();
-	}
-
+	const CO_MPESA_PRIVATE_UNKOWN = 1499;
 }
 
 ?>

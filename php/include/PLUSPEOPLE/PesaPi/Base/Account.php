@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2015, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,8 @@ class Account {
 	const SOMALIA_TELESOME_PRIVATE = 11;
 	const SOMALIA_HORMUUD_PRIVATE = 12;
 	const GHANA_MTN_PRIVATE = 13;
-
+	const CONGO_MPESA_PRIVATE = 14;
+	
   protected $id = 0;
   protected $type = 0;
   protected $name = "";

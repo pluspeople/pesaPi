@@ -782,6 +782,82 @@
 				</div>
 
 
+        <!-- CO: MPESA PRIVATE -->
+				<div class="panel panel-primary">
+					<div class="panel-heading" onclick="$(this).next().slideToggle();">
+						<h3 class="panel-title">Congo: MPESA private</h3>
+					</div>
+					<div class="panel-body" style="display:none;">
+						<p>This option is for private/personal MPESA money accounts in Congo. If the only way you are "notified" about transactions is through SMS's from Vodaphone/Mpesa then this is the type to use.<br/>
+							Notice you will need to install SMS-Sync on an android phone to forward the SMS's to PesaPi</p>
+		        <input type="hidden" name="type" value="14" />
+
+						<div class="input-group">
+							<span class="input-group-addon" style="min-width:80px;">Name</span>
+							<input type="text" class="form-control" name="name" placeholder="" />
+						</div>
+
+						<div class="input-group" style="margin-top:10px;">
+							<span class="input-group-addon" style="min-width:80px;">Identifier</span>
+							<input type="text" class="form-control" name="identifier" placeholder="" />
+						</div>
+
+						<div class="input-group" style="margin-top:10px;">
+							<span class="input-group-addon">
+								<input type="checkbox" name="pushIn" value="1" onclick="$(this).parent().parent().next().slideToggle();"/>
+							</span>
+							<input type="text" class="form-control" value="PUSH notification when money come in" disabled="disabled"/>
+						</div>
+						<div style="display:none;" id="pushInDetails">
+							<div class="input-group" style="margin-top:10px;margin-left:40px;">
+								<span class="input-group-addon" style="min-width:80px;">URL</span>
+								<input type="text" class="form-control" name="pushInUrl" placeholder="http://www.yourdomain.com/in.php" />
+							</div>
+							<div class="input-group" style="margin-top:10px;margin-left:40px;">
+								<span class="input-group-addon" style="min-width:80px;">Secret</span>
+								<input type="text" class="form-control" name="pushInSecret" placeholder="" />
+							</div>
+						</div>
+
+						<div class="input-group" style="margin-top:10px;">
+							<span class="input-group-addon">
+								<input type="checkbox" name="pushOut" value="1" onclick="$(this).parent().parent().next().slideToggle();"/>
+							</span>
+							<input type="text" class="form-control" value="PUSH notification when money go out" disabled="disabled"/>
+						</div>
+						<div style="display:none;" id="pushOutDetails">
+							<div class="input-group" style="margin-top:10px;margin-left:40px;">
+								<span class="input-group-addon" style="min-width:80px;">URL</span>
+								<input type="text" class="form-control" name="pushOutUrl" placeholder="http://www.yourdomain.com/out.php" />
+							</div>
+							<div class="input-group" style="margin-top:10px;margin-left:40px;">
+								<span class="input-group-addon" style="min-width:80px;">Secret</span>
+								<input type="text" class="form-control" name="pushOutSecret" placeholder="" />
+							</div>
+						</div>
+
+						<div class="input-group" style="margin-top:10px;">
+							<span class="input-group-addon">
+								<input type="checkbox" name="pushNeutral" value="1" onclick="$(this).parent().parent().next().slideToggle();"/>
+							</span>
+							<input type="text" class="form-control" value="PUSH notification on actions where money neither come in or go out" disabled="disabled"/>
+						</div>
+						<div style="display:none;" id="pushNeutralDetails">
+							<div class="input-group" style="margin-top:10px;margin-left:40px;">
+								<span class="input-group-addon" style="min-width:80px;">URL</span>
+								<input type="text" class="form-control" name="pushNeutralUrl" placeholder="http://www.yourdomain.com/neutral.php" />
+							</div>
+							<div class="input-group" style="margin-top:10px;margin-left:40px;">
+								<span class="input-group-addon" style="min-width:80px;">Secret</span>
+								<input type="text" class="form-control" name="pushNeutralSecret" placeholder="" />
+							</div>
+						</div>
+
+						<div class="pull-right" style="margin-top:10px;">
+							<button type="button" class="btn btn-success" onClick="addPrivateAccount($(this).parent().parent());">Register Account</button>
+						</div>
+					</div>
+				</div>
 
 
         <hr width="99%"/>

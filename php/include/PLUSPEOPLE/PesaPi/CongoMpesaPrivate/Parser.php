@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2014, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2015, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -27,21 +27,39 @@
 		SUCH DAMAGE.
 
 		File originally by Michael Pedersen <kaal@pluspeople.dk>
+		Based on examples provided by Hassan Al Jirani
  */
-namespace PLUSPEOPLE\PesaPi\GhanaMTNPrivate;
+namespace PLUSPEOPLE\PesaPi\CongoMpesaPrivate;
 
-class Account extends \PLUSPEOPLE\PesaPi\Base\PrivateAccount { 
-	public function getFormatedType() {
-		return "Ghana - MTN Private";
-	}
+class Parser extends \PLUSPEOPLE\PesaPi\Base\Parser{
+	const DATE_FORMAT = "j/n/Y h:i:s";
 
-	public function getSender() {
-		return ""; // Unknown at this point - security risk
-	}
+	public function parse($input) {
+		$result = $this->getBlankStructure();
 
-	// Namespace mismatch workaround
-	public function parserFactory() {
-		return new Parser();
+		// REFACTOR: should be split into subclasses
+		// ARGENT RECU du 243881260264 le 13/01/2015 12:51:37 Du compte: 1000624832 Montant: 0.20 USD Frais: 0.00 USD Ref: 181346285 Solde Disponible: 0.20 USD
+		if (strpos($input, " ARGENT RECU du ") !== FALSE) {
+			$result["SUPER_TYPE"] = Transaction::MONEY_IN;
+			$result["TYPE"] = Transaction::CO_MPESA_PRIVATE_PAYMENT_RECEIVED;
+
+			$temp = array();
+			preg_match_all("/ARGENT RECU du (\d+) le (\d\d?\/\d\d\/\d{4} \d\d?:\d\d:\d\d)[\s\n]+Du compte: (\d+)[\s\n]+Montant: ([0-9\.\,]+) USD[\s\n]+Frais: ([0-9\.\,]+) USD[\s\n]+Ref: (\d+)[\s\n]+Solde Disponible: ([0-9\.\,]+) USD/mi", $input, $temp);
+			if (isset($temp[1][0])) {
+				$result["RECEIPT"] = $temp[6][0];
+				$result["AMOUNT"] = $this->numberInput($temp[4][0]);
+				$result["PHONE"] = $temp[0][0];
+				$result["TIME"] = $this->dateInput(Parser::DATE_FORMAT, $temp[2][0]);
+				$result["BALANCE"] = $this->numberInput($temp[7][0]);
+				$result["COST"] = $this->numberInput($temp[5][0]);				
+			}
+
+		} else {
+			$result["SUPER_TYPE"] = Transaction::MONEY_NEUTRAL;
+			$result["TYPE"] = Transaction::CO_MPESA_PRIVATE_UNKOWN;
+		}
+
+		return $result;
 	}
 
 }

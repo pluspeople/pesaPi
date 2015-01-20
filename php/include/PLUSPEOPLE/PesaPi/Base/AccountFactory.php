@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2015, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -133,6 +133,9 @@ settings ";
 		break;
 		case Account::GHANA_MTN_PRIVATE:
 			$object = new \PLUSPEOPLE\PesaPi\GhanaMTNPrivate\Account($id, $initValues);
+		break;
+		case Account::CONGO_MPESA_PRIVATE:
+			$object = new \PLUSPEOPLE\PesaPi\CongoMpesaPrivate\Account($id, $initValues);
 		break;
     }
     return $object;
