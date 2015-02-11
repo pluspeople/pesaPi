@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2015, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@
 namespace PLUSPEOPLE\PesaPi\MpesaPaybill;
 
 class HTMLPaymentScrubber1 {
-	const VERSION = "1.0";
 
 	static public function scrubUrls(&$rawtext) {
 		$temp = array();

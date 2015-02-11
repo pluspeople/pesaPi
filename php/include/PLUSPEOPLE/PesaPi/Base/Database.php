@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2015, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -44,12 +44,15 @@ class Database {
 	# # # # # # # # Initializer # # # # # # # # # #
 	protected function __construct($type) {
 		$this->config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
-		// if we need to use same credentials to the database then we need to use mysql_connect instead of mysql_pconnect.
-		$this->dbId = mysql_pconnect($this->config->getConfig("DatabaseHost" . $type),$this->config->getConfig("DatabaseUser" . $type),$this->config->getConfig("DatabasePassword" . $type), true);
-		if ($this->dbId > 0) {
-			if (!mysql_select_db($this->config->getConfig("DatabaseDatabase" . $type), $this->dbId)) {
-				exit;
-			}
+
+		$this->db = new mysqli($this->config->getConfig("DatabaseHost" . $type), 
+													 $this->config->getConfig("DatabaseUser" . $type),
+													 $this->config->getConfig("DatabasePassword" . $type),
+													 $this->config->getConfig("DatabaseDatabase" . $type));
+
+		if ($this->db->connect_errno) {
+			print "DB connection error";
+			exit();
 		}
 	}
 
@@ -68,42 +71,42 @@ class Database {
 	}
 
 	public function dbIn($input) {
-		return addslashes($input);
+		return $this->db->real_escape_string($input);
 	}
 
 	public function dbOut($input) {
-		return stripslashes($input);
+		return $input;
 	}
 
 	public function query($input) {
 		++$this->queryAmount;
-		return mysql_query($input, $this->dbId);		
+		return $this->db->query($input);		
 	}
 
 	public function fetchObject($input) {
-		return mysql_fetch_object($input);
+		return $input->fetch_object();
 	}
 
 	public function freeResult($input) {
-		return mysql_free_result($input);
+		return $input->close();
 	}
 
 	public function insertId() {
-    return mysql_insert_id($this->dbId);
+		return $this->db->insert_id;
 	} 
 
 	public function affectedRows() {
-		return mysql_affected_rows($this->dbId);
+		return $this->db->affected_rows;
 	}
 
 	public function numRows($input) {
-		return mysql_num_rows($input);
+		return $input->num_rows;
 	}
 
 	public function beginTransaction() {
 		$this->transactionCount++;
 		if ($this->transactionCount == 1) {
-			return (bool)mysql_query("START TRANSACTION");
+			return (bool)$this->query("START TRANSACTION");
 		}
 		return true;
 	}
@@ -113,7 +116,7 @@ class Database {
 			$this->transactionCount--;
 		}
 		if ($this->transactionCount == 0) {
-			return (bool)mysql_query("COMMIT");
+			return (bool)$this->query("COMMIT");
 		}
 		return true;
 	}
@@ -121,7 +124,7 @@ class Database {
 	public function rollbackTransaction() {
 		if ($this->transactionCount != 0) {
 			$this->transactionCount = 0;
-			return (bool)mysql_query("ROLLBACK");
+			return (bool)$this->query("ROLLBACK");
 		}
 		return true;
 	}

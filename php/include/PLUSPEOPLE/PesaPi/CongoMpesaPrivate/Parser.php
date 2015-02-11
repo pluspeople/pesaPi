@@ -41,7 +41,7 @@ class Parser extends \PLUSPEOPLE\PesaPi\Base\Parser{
 		// ARGENT RECU du 243881260264 le 13/01/2015 12:51:37 Du compte: 1000624832 Montant: 0.20 USD Frais: 0.00 USD Ref: 181346285 Solde Disponible: 0.20 USD
 		if (strpos($input, " ARGENT RECU du ") !== FALSE) {
 			$result["SUPER_TYPE"] = Transaction::MONEY_IN;
-			$result["TYPE"] = Transaction::CO_MPESA_PRIVATE_PAYMENT_RECEIVED;
+			$result["TYPE"] = Transaction::CD_MPESA_PRIVATE_PAYMENT_RECEIVED;
 
 			$temp = array();
 			preg_match_all("/ARGENT RECU du (\d+) le (\d\d?\/\d\d\/\d{4} \d\d?:\d\d:\d\d)[\s\n]+Du compte: (\d+)[\s\n]+Montant: ([0-9\.\,]+) USD[\s\n]+Frais: ([0-9\.\,]+) USD[\s\n]+Ref: (\d+)[\s\n]+Solde Disponible: ([0-9\.\,]+) USD/mi", $input, $temp);
@@ -56,7 +56,7 @@ class Parser extends \PLUSPEOPLE\PesaPi\Base\Parser{
 
 		} else {
 			$result["SUPER_TYPE"] = Transaction::MONEY_NEUTRAL;
-			$result["TYPE"] = Transaction::CO_MPESA_PRIVATE_UNKOWN;
+			$result["TYPE"] = Transaction::CD_MPESA_PRIVATE_UNKOWN;
 		}
 
 		return $result;

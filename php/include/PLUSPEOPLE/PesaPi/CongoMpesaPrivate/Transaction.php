@@ -32,9 +32,9 @@ namespace PLUSPEOPLE\PesaPi\CongoMpesaPrivate;
 
 class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
 	// Extended attributes
-	const CO_MPESA_PRIVATE_PAYMENT_RECEIVED = 1401;
+	const CD_MPESA_PRIVATE_PAYMENT_RECEIVED = 1401;
 
-	const CO_MPESA_PRIVATE_UNKOWN = 1499;
+	const CD_MPESA_PRIVATE_UNKOWN = 1499;
 }
 
 ?>

@@ -45,7 +45,7 @@ class Account {
 	const SOMALIA_TELESOME_PRIVATE = 11;
 	const SOMALIA_HORMUUD_PRIVATE = 12;
 	const GHANA_MTN_PRIVATE = 13;
-	const CONGO_MPESA_PRIVATE = 14;
+	const DR_CONGO_MPESA_PRIVATE = 14;
 	
   protected $id = 0;
   protected $type = 0;

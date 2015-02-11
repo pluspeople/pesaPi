@@ -255,7 +255,7 @@ class configtool extends \PLUSPEOPLE\SlowTemplate\Template {
 		$required = array("pesapi_account", "pesapi_payment");
 		$tables = array();
 		if ($result = $db->query("SHOW TABLES;")) {
-			while ($row = mysql_fetch_row($result)) {
+			while ($row = $result->fetch_row()) {
 				$tables[] = $row[0];
 			}
 		}
