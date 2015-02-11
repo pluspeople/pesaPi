@@ -1,5 +1,5 @@
 <?php
-/*	Copyright (c) 2011-2014, PLUSPEOPLE Kenya Limited. 
+/*	Copyright (c) 2011-2015, PLUSPEOPLE Kenya Limited. 
 		All rights reserved.
 
 		Redistribution and use in source and binary forms, with or without
@@ -38,8 +38,8 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 
 	public function availableBalance($time = null) {
 		$time = (int)$time;
-		$lastSyncSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::factoryByName("LastSync");
-		$lastSync = $lastSyncSetting->getValue();
+		$settings = $this->getSettings();
+		$lastSync = $settings["LAST_SYNC"];
 
 		if ($lastSync < $time) {
 			// we must have data all the way up to the specified time.
@@ -64,8 +64,8 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 
 
 	public function locateByPhone($phone, $from=0, $until=0) {
-		$lastSyncSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::factoryByName("LastSync");
-		$lastSync = $lastSyncSetting->getValue();
+		$settings = $this->getSettings();
+		$lastSync = $settings["LAST_SYNC"];
 		$config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
 		$initSyncDate = strtotime($config->getConfig('MpesaInitialSyncDate'));
 
@@ -86,8 +86,8 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 	}
 
 	public function locateByName($name, $from = 0, $until = 0) {
-		$lastSyncSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::factoryByName("LastSync");
-		$lastSync = $lastSyncSetting->getValue();
+		$settings = $this->getSettings();
+		$lastSync = $settings["LAST_SYNC"];
 		$config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
 		$initSyncDate = strtotime($config->getConfig('MpesaInitialSyncDate'));
 
@@ -107,8 +107,8 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 	}
 
 	public function locateByAccount($account, $from=0, $until=0) {
-		$lastSyncSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::factoryByName("LastSync");
-		$lastSync = $lastSyncSetting->getValue();
+		$settings = $this->getSettings();
+		$lastSync = $settings["LAST_SYNC"];
 		$config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
 		$initSyncDate = strtotime($config->getConfig('MpesaInitialSyncDate'));
 
@@ -129,8 +129,8 @@ class MpesaPaybill extends \PLUSPEOPLE\PesaPi\Base\Account {
 
 	public function locateByTimeInterval($from, $until, $type) {
 		$type = (int)$type;
-		$lastSyncSetting = \PLUSPEOPLE\PesaPi\Base\SettingFactory::factoryByName("LastSync");
-		$lastSync = $lastSyncSetting->getValue();
+		$settings = $this->getSettings();
+		$lastSync = $settings["LAST_SYNC"];
 		$config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
 		$initSyncDate = strtotime($config->getConfig('MpesaInitialSyncDate'));
 
