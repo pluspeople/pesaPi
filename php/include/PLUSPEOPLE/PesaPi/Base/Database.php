@@ -45,10 +45,10 @@ class Database {
 	protected function __construct($type) {
 		$this->config = \PLUSPEOPLE\PesaPi\Configuration::instantiate();
 
-		$this->db = new mysqli($this->config->getConfig("DatabaseHost" . $type), 
-													 $this->config->getConfig("DatabaseUser" . $type),
-													 $this->config->getConfig("DatabasePassword" . $type),
-													 $this->config->getConfig("DatabaseDatabase" . $type));
+		$this->db = new \mysqli($this->config->getConfig("DatabaseHost" . $type), 
+										 			  $this->config->getConfig("DatabaseUser" . $type),
+													  $this->config->getConfig("DatabasePassword" . $type),
+													  $this->config->getConfig("DatabaseDatabase" . $type));
 
 		if ($this->db->connect_errno) {
 			print "DB connection error";
