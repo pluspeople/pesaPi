@@ -1,0 +1,20 @@
+{
+		"name": "pluspeople/pesapi",
+		"description": "Mobile money middleware",
+		"version": "1.0.0",
+		"authors": [
+				{
+						"name": "Michael Pedersen",
+						"email": "michael@pluspeople.dk"
+				}
+		],
+		"minimum-stability": "dev",
+		"require": {
+				"php": ">=5.3.0"
+		},
+		"autoload": {
+				"psr-0": {
+						"PLUSPEOPLE": "php/include/"
+				}
+		}
+}
