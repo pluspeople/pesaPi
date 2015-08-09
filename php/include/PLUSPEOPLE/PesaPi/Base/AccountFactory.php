@@ -137,6 +137,9 @@ settings ";
 		case Account::DR_CONGO_MPESA_PRIVATE:
 			$object = new \PLUSPEOPLE\PesaPi\CongoMpesaPrivate\Account($id, $initValues);
 		break;
+		case Account::UGANDA_MTN_PRIVATE:
+			$object = new \PLUSPEOPLE\PesaPi\UgandaMTNPrivate\Account($id, $initValues);
+		break;
     }
     return $object;
   }
