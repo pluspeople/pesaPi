@@ -48,7 +48,10 @@ class Parser {
 
 	public function dateInput($time, $format) {
 		$dt = \DateTime::createFromFormat($format, $time);
-		return $dt->getTimestamp();
+		if ($dt !== FALSE) {
+			return $dt->getTimestamp();
+		}
+		return 0;
 	}
 
 	public function numberInput($input) {
