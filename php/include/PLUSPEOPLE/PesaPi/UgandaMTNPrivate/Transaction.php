@@ -35,7 +35,7 @@ class Transaction extends \PLUSPEOPLE\PesaPi\Base\Transaction {
 	const UG_MTN_PRIVATE_PAYMENT_RECEIVED = 1501;
 	const UG_MTN_PRIVATE_PAYMENT_SENT = 1502;
 
-	const UT_MTN_PRIVATE_UNKOWN = 1599;
+	const UG_MTN_PRIVATE_UNKOWN = 1599;
 }
 
 ?>
