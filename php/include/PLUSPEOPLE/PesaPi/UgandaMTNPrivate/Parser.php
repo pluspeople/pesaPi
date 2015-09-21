@@ -33,7 +33,7 @@ namespace PLUSPEOPLE\PesaPi\UgandaMTNPrivate;
 use \PLUSPEOPLE\PesaPi\Base\Utility;
 
 class Parser {
-	public function dateInput($time)
+	public function dateInput($time) {
 		$dt = \DateTime::createFromFormat("Y-m-d H:i:s", $time);
 		return $dt->getTimestamp();
 	}
